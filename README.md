@@ -1,317 +1,159 @@
-# 👋 Hi There, I'm Stebin S
-
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6D28D9,100:06B6D4&height=250&section=header&text=Hi%20There,%20I'm%20Stebin%20S%20👋&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Computer%20Science%20Student%20•%20Developer%20•%20Builder&descAlignY=55&descSize=18" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6D28D9,100:06B6D4&height=230&section=header&text=Stebin%20S%20👋&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=CSE%20Student%20%7C%20Developer%20%7C%20Cybersecurity%20Learner&descAlignY=58&descSize=18" width="100%"/>
 
-<img src="https://readme-typing-svg.demolab.com/?lines=CSE+Student;Web+Developer;Cybersecurity+Learner;Python+%7C+C+%7C+JavaScript+%7C+TypeScript;Building+real+projects;Learning+something+new+every+day;Turning+ideas+into+code+🚀&font=Fira%20Code&center=true&width=650&height=60&color=06B6D4&vCenter=true&size=22&pause=1200" />
+<img src="https://readme-typing-svg.demolab.com/?lines=Building+things+with+code;Learning+Cybersecurity;Exploring+AI+%26+Local+Models;Web+Development+%7C+Python+%7C+C;Turning+ideas+into+projects+🚀&font=Fira+Code&center=true&width=650&height=55&color=06B6D4&vCenter=true&size=21&pause=1200"/>
 
 <br/>
 
 <a href="https://github.com/itzstebin">
-<img src="https://komarev.com/ghpvc/?username=itzstebin&label=PROFILE%20VIEWS&color=6D28D9&style=for-the-badge" alt="Profile Views"/>
+<img src="https://komarev.com/ghpvc/?username=itzstebin&label=PROFILE%20VIEWS&color=6D28D9&style=for-the-badge"/>
 </a>
-
- 
-
+&nbsp;
 <a href="https://github.com/itzstebin?tab=followers">
-<img src="https://img.shields.io/github/followers/itzstebin?label=FOLLOWERS&style=for-the-badge&color=06B6D4" alt="Followers"/>
+<img src="https://img.shields.io/github/followers/itzstebin?label=FOLLOWERS&style=for-the-badge&color=06B6D4"/>
 </a>
-
- 
-
+&nbsp;
 <a href="https://github.com/itzstebin?tab=repositories">
-<img src="https://img.shields.io/badge/REPOSITORIES-111111?style=for-the-badge&logo=github&logoColor=white" alt="Repositories"/>
+<img src="https://img.shields.io/badge/PROJECTS-111111?style=for-the-badge&logo=github&logoColor=white"/>
 </a>
 
 <br/><br/>
 
 <a href="https://cybroatrix.com">
-<img src="https://img.shields.io/badge/🛡️_CYBROATRIX-Technology_%26_Cybersecurity-6D28D9?style=for-the-badge" alt="Cybroatrix"/>
-</a>
-
-<a href="https://github.com/itzstebin">
-<img src="https://img.shields.io/badge/GITHUB-itzstebin-111111?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+<img src="https://img.shields.io/badge/🛡️_Cybroatrix-Cybersecurity_%26_Technology-6D28D9?style=for-the-badge"/>
 </a>
 
 </div>
 
 ---
 
-## 🧑‍💻 About Me
+## 👨‍💻 About Me
 
-Hey! I'm **Stebin**, a Computer Science / CSE student who likes building things, experimenting with technology, and figuring out how stuff works under the hood.
+I'm **Stebin**, a **CSE / Computer Science student** interested in software development, cybersecurity, networking and emerging technology.
 
-I started with smaller programming projects and gradually moved into **web development, cybersecurity, networking, AI/ML experiments, streaming projects, and creative technology projects**.
+I learn mainly by **building projects and experimenting with things I don't fully understand yet**.
 
-I'm still learning — and that's exactly how I want it to be.
+Currently exploring:
 
-```text
-Learn → Build → Break → Debug → Understand → Improve → Repeat
-```
-
-### A few things about me
-
-* 🎓 Computer Science / CSE student
-* 💻 Interested in software development and real-world projects
-* 🌐 Building websites and web applications
-* 🐍 Working with Python
-* ⚙️ Learning C and strengthening programming fundamentals
-* 🟨 Working with JavaScript and TypeScript
-* ⚛️ Exploring React and modern frontend development
-* 🛡️ Learning cybersecurity and networking
-* 🧩 Exploring CTFs and security concepts
-* 🤖 Experimenting with AI, local models and ML
-* 📺 Building and experimenting with IPTV / streaming projects
-* 🚀 Building **Cybroatrix**
-* ♟️ Chess enjoyer
-* 🎮 Minecraft enjoyer
-* 🎨 Interested in editing, design and creative projects
-
----
-
-# 🚀 What I'm Building
-
-## 🛡️ Cybroatrix
-
-**Cybroatrix** is one of my main technology projects, focused around **cybersecurity, technology and educational content**.
-
-I'm using it to explore cybersecurity concepts, networking, web technologies and ways of explaining technical topics through projects and content.
-
-### Areas I'm exploring
+* 💻 Web development & modern frontend
+* 🐍 Python & programming fundamentals
+* ⚙️ C programming
+* 🟨 JavaScript & TypeScript
+* 🛡️ Cybersecurity & networking
+* 🧩 CTFs, OSINT & digital forensics
+* 🤖 AI / ML & local language models
+* 📺 IPTV, streaming & media applications
 
 ```text
-Cybersecurity
-Networking
-Web Development
-Technology
-Education
-Creative Content
+Learn → Build → Break → Debug → Understand → Improve
 ```
 
-🌐 **Website:** https://cybroatrix.com
-
 ---
 
-## 🎬 BingeHub
-
-I've also been experimenting with building a modern **streaming / movie platform**.
-
-Some of the things I've worked with include:
-
-* 🎬 Movie and TV interfaces
-* 🔎 Search experiences
-* 📺 IPTV / M3U playlists
-* ▶️ HLS video playback
-* ⚛️ React interfaces
-* 📘 TypeScript
-* ⚡ Vite
-* 🌐 APIs and media handling
-
-The project is part of my exploration into building complete web experiences rather than just individual pages.
-
----
-
-## 🤖 AI & Local Model Experiments
-
-I've been experimenting with AI from the programming side as well.
-
-Things I've explored include:
-
-* Python-based AI projects
-* Local language models
-* PyTorch
-* Character-level language models
-* Model training experiments
-* Chatbot interfaces
-* Memory-based chatbot concepts
-
-My goal is to understand more than just how to **use** AI — I want to understand how the underlying pieces work.
-
----
-
-# 🧰 Tech Stack
-
-### 💻 Languages
-
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=c,python,javascript,typescript" />
-
-</div>
-
----
-
-### 🌐 Web Development
-
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=html,css,javascript,react,vite,tailwind,nodejs" />
-
-</div>
-
----
-
-### 🛠️ Tools & Platforms
-
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=git,github,vscode,firebase,netlify,vercel" />
-
-</div>
-
----
-
-# 🛡️ Cybersecurity
-
-Cybersecurity is an area I'm actively learning and experimenting with.
-
-### Topics that interest me
-
-| Area                   | What I'm exploring                             |
-| ---------------------- | ---------------------------------------------- |
-| 🔐 Cryptography        | Understanding encryption and encoding concepts |
-| 🕵️ OSINT              | Information gathering and investigation        |
-| 🧩 CTFs                | Practical security challenges                  |
-| 🔎 Digital Forensics   | Finding and analysing digital evidence         |
-| 🌐 Web Security        | Understanding how web applications can fail    |
-| 🔬 Reverse Engineering | Understanding software behaviour               |
-| 📡 Networking          | Understanding how systems communicate          |
-| 🗃️ Steganography      | Hiding and discovering information             |
-
-> My approach to security is simple: understand how systems work first, then learn how to secure them.
-
----
-
-# 📂 Projects & Experiments
-
-Some of the projects and experiments I've worked on:
+## 🚀 Current Projects
 
 ### 🛡️ Cybroatrix
 
-Technology and cybersecurity-focused project.
+My technology and cybersecurity-focused project.
 
-**Focus:** Cybersecurity • Networking • Web • Education
+I'm using it to explore **cybersecurity, networking, web development and technical education**, while creating projects and content around those areas.
 
----
+**Focus:** `Cybersecurity` `Networking` `Web` `Education`
 
-### 📺 BingeHub / IPTV
-
-Streaming and media experiments involving modern web interfaces, M3U playlists and HLS playback.
-
-**Focus:** React • TypeScript • Vite • Streaming
+🌐 **https://cybroatrix.com**
 
 ---
 
-### 🎮 Guess the Number
+### 🎬 BingeHub
 
-One of my earlier Python projects.
+A streaming / movie platform experiment.
 
-A simple project, but an important part of the journey from learning syntax to actually building something.
+I've worked with:
 
-**Focus:** Python • Programming Fundamentals
+`React` `TypeScript` `Vite` `M3U/IPTV` `HLS` `APIs`
 
----
-
-### 🤖 AI / Local Model Experiments
-
-Experiments around local AI, model training and chatbot concepts.
-
-**Focus:** Python • PyTorch • AI/ML
+The project explores movie interfaces, search, streaming playlists and browser-based media playback.
 
 ---
 
-### 🌐 Web Experiments
+### 🤖 AI & Local Model Experiments
 
-Various websites and web applications created while learning modern web development.
+I've experimented with building and running AI systems locally, including:
 
-**Focus:** HTML • CSS • JavaScript • React • TypeScript
+* Python chatbot projects
+* Local language models
+* PyTorch
+* Character-level models
+* Model training
+* Memory-based chatbot concepts
 
----
-
-# 📚 Currently Learning
-
-```text
-             ┌─────────────────────┐
-             │   C PROGRAMMING     │
-             └──────────┬──────────┘
-                        ↓
-             ┌─────────────────────┐
-             │ PROGRAMMING BASICS  │
-             └──────────┬──────────┘
-                        ↓
-             ┌─────────────────────┐
-             │  WEB DEVELOPMENT    │
-             └──────────┬──────────┘
-                        ↓
-             ┌─────────────────────┐
-             │ NETWORKING & CYBER  │
-             └──────────┬──────────┘
-                        ↓
-             ┌─────────────────────┐
-             │      AI / ML        │
-             └──────────┬──────────┘
-                        ↓
-             ┌─────────────────────┐
-             │ BIGGER PROJECTS 🚀  │
-             └─────────────────────┘
-```
-
-I'm focusing on **strong fundamentals** instead of simply collecting technologies.
+I'm interested in understanding **how AI systems work**, not only using them.
 
 ---
 
-# 🧠 How I Like To Build
-
-Most of my projects follow roughly the same cycle:
-
-```text
-💡 Idea
-   ↓
-🧪 Prototype
-   ↓
-💥 Something breaks
-   ↓
-🔎 Debug
-   ↓
-📚 Research
-   ↓
-🔧 Fix
-   ↓
-🧠 Understand
-   ↓
-🚀 Improve
-   ↓
-📦 Ship
-```
-
-Because honestly...
-
-**the bug is usually where the learning starts.** 😭
-
----
-
-# 📊 GitHub Statistics
+## 🧰 Technologies
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=itzstebin&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" height="170"/>
-
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=itzstebin&theme=tokyonight&hide_border=true" height="170"/>
+<img src="https://skillicons.dev/icons?i=c,python,javascript,typescript,html,css,react,vite,tailwind,nodejs,git,github,firebase,vscode" />
 
 </div>
 
-<br/>
+### 🔍 Areas I'm Exploring
+
+`Cybersecurity` · `Networking` · `Web Security` · `CTFs` · `OSINT` · `Digital Forensics` · `Steganography` · `Reverse Engineering` · `AI/ML`
+
+---
+
+## 📂 Other Projects
+
+| Project                 | Description                                                   |
+| ----------------------- | ------------------------------------------------------------- |
+| 🎮 **Guess the Number** | One of my early Python programming projects                   |
+| 🌐 **Web Projects**     | Websites and experiments built while learning web development |
+| 📺 **IPTV Experiments** | M3U playlists, HLS playback and streaming interfaces          |
+| 🤖 **AI Experiments**   | Local models, chatbot and model-training experiments          |
+
+---
+
+## 📚 Currently Learning
+
+```text
+C Programming
+     ↓
+Programming Fundamentals
+     ↓
+Web Development
+     ↓
+Networking
+     ↓
+Cybersecurity
+     ↓
+AI / Machine Learning
+```
+
+My goal is to build **strong fundamentals first**, then use them to create bigger systems.
+
+---
+
+## 📊 GitHub
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=itzstebin&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" height="170"/>
+<img src="https://github-readme-stats.vercel.app/api?username=itzstebin&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" height="165"/>
+
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=itzstebin&theme=tokyonight&hide_border=true" height="165"/>
+
+<br/><br/>
+
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=itzstebin&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" height="165"/>
 
 </div>
 
 ---
 
-# 📈 Contribution Activity
+## 📈 Contribution Activity
 
 <div align="center">
 
@@ -321,107 +163,45 @@ Because honestly...
 
 ---
 
-# 🧊 3D Contribution Graph
+## 🧊 3D Contributions
 
 <div align="center">
 
-<img src="./profile-3d-contrib/profile-night-view.svg" width="100%" alt="3D GitHub Contribution Graph"/>
+<img src="./profile-3d-contrib/profile-night-view.svg" width="100%" alt="3D Contribution Graph"/>
 
 </div>
 
 ---
 
-# 🐍 Contribution Snake
+## 🐍 Contribution Snake
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/itzstebin/itzstebin/output/github-contribution-grid-snake-dark.svg" width="95%" alt="GitHub Contribution Snake"/>
+<img src="https://raw.githubusercontent.com/itzstebin/itzstebin/output/github-contribution-grid-snake-dark.svg" width="95%" alt="Contribution Snake"/>
 
 </div>
 
 ---
 
-# 🏆 GitHub Trophies
+## 🏆 GitHub Trophies
 
 <div align="center">
 
-<img src="https://github-profile-trophy.vercel.app/?username=itzstebin&theme=darkhub&no-frame=true&row=1&column=6" width="95%" alt="GitHub Trophies"/>
+<img src="https://github-profile-trophy.vercel.app/?username=itzstebin&theme=darkhub&no-frame=true&row=1&column=6" width="95%"/>
 
 </div>
 
 ---
 
-# 🎯 What I'm Working Toward
+## ♟️ Beyond Code
 
-```text
-                TODAY
-                  │
-                  ▼
-          Learn the fundamentals
-                  │
-                  ▼
-           Build real projects
-                  │
-                  ▼
-        Understand the systems
-                  │
-                  ▼
-       Learn cybersecurity deeply
-                  │
-                  ▼
-          Explore AI / ML
-                  │
-                  ▼
-          Build bigger things
-                  │
-                  ▼
-               🚀
-```
+When I'm away from the keyboard:
 
-I don't want to just collect tutorials.
-
-I want to **build things that actually work.**
+**♟️ Chess** · **🎮 Minecraft** · **🎨 Editing & Design** · **🎬 Creative Projects** · **🧠 Technology**
 
 ---
 
-# 🎮 Outside The Code
-
-Technology isn't the only thing I enjoy.
-
-When I'm not working on a project, I might be:
-
-* ♟️ Playing chess
-* 🎮 Playing Minecraft
-* 🎨 Experimenting with design
-* 🎬 Editing or creating content
-* 🧠 Exploring random technology rabbit holes
-* 🔧 Starting another project because I had an idea at 2 AM
-
----
-
-# 📌 My Philosophy
-
-> **Don't be afraid to start small.**
->
-> Every big project starts as a tiny experiment.
-
-```text
-Small project
-      ↓
-Small mistake
-      ↓
-Small lesson
-      ↓
-Better project
-      ↓
-Bigger lesson
-      ↓
-Better developer
-```
-
----
-
-# 📫 Connect With Me
+## 📫 Connect
 
 <div align="center">
 
@@ -439,87 +219,10 @@ Better developer
 
 <div align="center">
 
-### 💻 Building today. Learning every day.
+### 💻 Build it. Break it. Understand it.
 
-**Thanks for visiting my profile.**
-
-⭐ Explore the repositories • Follow the journey • Keep building
+**Still learning. Still building. 🚀**
 
 </div>
 
-<br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:06B6D4,100:6D28D9&height=120&section=footer" width="100%"/>
-
-<!--
-===============================================================
-                         SETUP
-===============================================================
-
-PROFILE REPOSITORY
-------------------
-This repository must be:
-
-    itzstebin/itzstebin
-
-It must be PUBLIC.
-
-Do not use the old username "Stebin777".
-
----------------------------------------------------------------
-
-3D CONTRIBUTION GRAPH
----------------------------------------------------------------
-
-The 3D graph is generated automatically by GitHub Actions.
-
-Workflow:
-
-    .github/workflows/profile-3d.yml
-
-Generated files:
-
-    profile-3d-contrib/
-
-The README displays:
-
-    profile-night-view.svg
-
----------------------------------------------------------------
-
-CONTRIBUTION SNAKE
----------------------------------------------------------------
-
-Workflow:
-
-    .github/workflows/snake.yml
-
-The workflow generates:
-
-    github-contribution-grid-snake.svg
-    github-contribution-grid-snake-dark.svg
-
-and publishes them to the "output" branch.
-
----------------------------------------------------------------
-
-IMPORTANT
----------------------------------------------------------------
-
-GitHub README files cannot directly execute custom JavaScript.
-
-Therefore:
-
-    README
-       ↓
-    SVG animations
-       ↓
-    GitHub Actions
-       ↓
-    Generated assets
-
-For a real interactive 3D website with JavaScript,
-host it separately using GitHub Pages / Vercel / Netlify.
-
-===============================================================
--->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:06B6D4,100:6D28D9&height=110&section=footer" width="100%"/>
