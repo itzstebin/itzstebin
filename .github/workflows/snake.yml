@@ -4,9 +4,7 @@ name: Generate Contribution Snake
 on:
   schedule:
     - cron: "0 */6 * * *"
-
   workflow_dispatch:
-
   push:
     branches:
       - main
@@ -19,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate contribution snake
+      - name: Generate snake
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: itzstebin
@@ -27,7 +25,7 @@ jobs:
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
-      - name: Publish generated SVG
+      - name: Publish snake
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
