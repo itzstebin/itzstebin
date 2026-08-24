@@ -4,7 +4,6 @@ name: Generate 3D Contribution Graph
 on:
   schedule:
     - cron: "0 18 * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -15,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Generate 3D contribution graph
@@ -24,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: itzstebin
 
-      - name: Commit generated graph
+      - name: Commit 3D graph
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
