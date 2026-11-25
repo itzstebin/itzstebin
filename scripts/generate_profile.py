@@ -1559,33 +1559,38 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         50% { transform: translateY(118px); }
       }
       @keyframes radarPing {
-        0% { transform: scale(1); opacity: 0.85; }
-        100% { transform: scale(2.8); opacity: 0; }
+        0% { transform: scale(1); opacity: 0.95; }
+        100% { transform: scale(3.2); opacity: 0; }
       }
       @keyframes cursorBlink {
         0%, 49% { opacity: 1; }
         50%, 100% { opacity: 0; }
       }
-      @keyframes rowShimmer {
-        0%, 100% { opacity: 0.86; }
-        50% { opacity: 1; }
+      @keyframes wordWave {
+        0%, 100% { opacity: 1; transform: translateX(0px); }
+        48% { opacity: 0.18; transform: translateX(5px); }
       }
-      .orbit-cw { transform-origin: 0px 0px; animation: orbitCW 14s linear infinite; }
-      .orbit-ccw { transform-origin: 0px 0px; animation: orbitCCW 22s linear infinite; }
-      .scanner { animation: scanSweep 4.2s ease-in-out infinite; }
-      .ping { transform-origin: 0px 0px; animation: radarPing 2.2s ease-out infinite; }
-      .cursor { animation: cursorBlink 1.1s step-end infinite; }
-      .row-sh { animation: rowShimmer 3.2s ease-in-out infinite; }
+      @keyframes portraitBreathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.32; }
+      }
+      .orbit-cw { transform-origin: 0px 0px; animation: orbitCW 8s linear infinite; }
+      .orbit-ccw { transform-origin: 0px 0px; animation: orbitCCW 13s linear infinite; }
+      .scanner { animation: scanSweep 3.2s ease-in-out infinite; }
+      .ping { transform-origin: 0px 0px; animation: radarPing 1.8s ease-out infinite; }
+      .cursor { animation: cursorBlink 0.9s step-end infinite; }
+      .word-row { animation: wordWave 4.6s ease-in-out infinite; }
+      .p-row { animation: portraitBreathe 3.2s ease-in-out infinite; }
     """
     defs = """
       <radialGradient id="wowGlow" cx="76%" cy="42%" r="48%">
-        <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.30"/>
-        <stop offset="60%" stop-color="#0f172a" stop-opacity="0.1"/>
+        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.38"/>
+        <stop offset="60%" stop-color="#0f172a" stop-opacity="0.12"/>
         <stop offset="100%" stop-color="#060b16" stop-opacity="0"/>
       </radialGradient>
       <linearGradient id="scanBeamGrad" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
-        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.28"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.62"/>
         <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
       </linearGradient>
       <clipPath id="wowClip">
@@ -1607,7 +1612,7 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         '  <circle cx="0" cy="0" r="4" fill="#34d399"/>',
         '</g>',
         f'<text x="864" y="36" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11">LIVE · @{esc(m["username"])}</text>',
-        f'<text x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#38bdf8">_</tspan></text>',
+        f'<text class="word-row" x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#7dd3fc">_</tspan></text>',
     ]
 
     # ASCII wordmark (keep full display_name on 1 crisp row when <= 10 chars, else split)
@@ -1618,9 +1623,9 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         font_sz = 13.0 if len(word) <= 8 else (11.0 if len(word) <= 10 else 8.8)
         line_step = 15.0 if len(word) <= 8 else (12.5 if len(word) <= 10 else 9.8)
         for ri, row_txt in enumerate(ascii_word_lines(word)):
-            delay = f"-{ri * 0.25:.2f}s"
+            delay = f"-{ri * 0.22:.2f}s"
             parts.append(
-                f'<text class="row-sh" x="36" y="{y_cursor:.1f}" fill="#e2e8f0" xml:space="preserve" '
+                f'<text class="word-row" x="36" y="{y_cursor:.1f}" fill="#f1f5f9" xml:space="preserve" '
                 f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.4" style="animation-delay:{delay};">{esc(row_txt)}</text>'
             )
             y_cursor += line_step
@@ -1628,17 +1633,25 @@ def render_wow_hero(m: dict[str, Any]) -> str:
 
     lang_line = " / ".join(l["name"] for l in m["languages"][:4]) or "Full-Stack"
     parts.append(
-        f'<text x="36" y="276" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="14.5" font-weight="600">{esc(lang_line)}</text>'
+        f'<text class="word-row" x="36" y="276" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="14.5" font-weight="600" style="animation-delay:-1.2s;">{esc(lang_line)}</text>'
     )
     parts.append(
-        f'<text x="36" y="302" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12">{esc(truncate(m["headline"], 50))}</text>'
+        f'<text class="word-row" x="36" y="302" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12" style="animation-delay:-1.5s;">{esc(truncate(m["headline"], 50))}</text>'
     )
 
-    # Right dual-rotating orbital reticle + ASCII portrait + laser scanner
+    # Right dual-rotating orbital reticle + satellite markers + ASCII portrait + laser scanner
     pcx, pcy = 696, 178
     parts.append(f'<g transform="translate({pcx},{pcy})">')
-    parts.append('  <circle class="orbit-ccw" cx="0" cy="0" r="134" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="10 14 2 14" opacity="0.55"/>')
-    parts.append('  <circle class="orbit-cw" cx="0" cy="0" r="147" fill="none" stroke="#3b82f6" stroke-width="1.4" stroke-dasharray="28 16 6 16" opacity="0.65"/>')
+    parts.append('  <g class="orbit-ccw">')
+    parts.append('    <circle cx="0" cy="0" r="134" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-dasharray="18 14 4 14" opacity="0.78"/>')
+    parts.append('    <circle cx="134" cy="0" r="3.2" fill="#7dd3fc"/>')
+    parts.append('    <circle cx="-134" cy="0" r="3.2" fill="#7dd3fc"/>')
+    parts.append('  </g>')
+    parts.append('  <g class="orbit-cw">')
+    parts.append('    <circle cx="0" cy="0" r="147" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-dasharray="36 18 8 18" opacity="0.88"/>')
+    parts.append('    <circle cx="0" cy="-147" r="4" fill="#38bdf8"/>')
+    parts.append('    <circle cx="0" cy="147" r="4" fill="#38bdf8"/>')
+    parts.append('  </g>')
     parts.append('</g>')
 
     grid = m.get("portrait_grid") or []
@@ -1662,17 +1675,17 @@ def render_wow_hero(m: dict[str, Any]) -> str:
                     tspans.append(esc(seg))
                 else:
                     tspans.append(f'<tspan fill="{col}">{esc(seg)}</tspan>')
-            delay = f"-{(ri % 8) * 0.35:.2f}s"
+            delay = f"-{(ri % 10) * 0.30:.2f}s"
             parts.append(
-                f'<text class="row-sh" x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
+                f'<text class="p-row" x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
                 f'font-family="{FONT_MONO}" font-size="7.4" font-weight="700" style="animation-delay:{delay};">{"".join(tspans)}</text>'
             )
 
-    # Vertical scanning beam across portrait
+    # Vivid vertical scanning beam across portrait
     parts.append('<g clip-path="url(#scanCircle)">')
     parts.append('  <g class="scanner">')
-    parts.append(f'    <rect x="{pcx-132}" y="{pcy-22}" width="264" height="44" fill="url(#scanBeamGrad)"/>')
-    parts.append(f'    <line x1="{pcx-132}" y1="{pcy}" x2="{pcx+132}" y2="{pcy}" stroke="#38bdf8" stroke-width="1.4" opacity="0.85"/>')
+    parts.append(f'    <rect x="{pcx-132}" y="{pcy-32}" width="264" height="64" fill="url(#scanBeamGrad)"/>')
+    parts.append(f'    <line x1="{pcx-132}" y1="{pcy}" x2="{pcx+132}" y2="{pcy}" stroke="#7dd3fc" stroke-width="2.2" opacity="0.96"/>')
     parts.append('  </g>')
     parts.append('</g>')
 
@@ -1694,7 +1707,7 @@ def render_wow_hero(m: dict[str, Any]) -> str:
             f'<text x="{sx}" y="402" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="28" font-weight="700">{esc(val)}</text>'
         )
         if idx < len(stats) - 1:
-            parts.append(f'<circle class="row-sh" cx="{xs[idx+1] - 32}" cy="363" r="3" fill="{t["accent"]}" style="animation-delay:-{idx*0.6:.1f}s;"/>')
+            parts.append(f'<circle class="p-row" cx="{xs[idx+1] - 32}" cy="363" r="3.5" fill="{t["accent"]}" style="animation-delay:-{idx*0.6:.1f}s;"/>')
 
     parts.append('</g>')
     parts.append(f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="18" fill="none" stroke="{t["border"]}" stroke-width="1.5"/>')
@@ -1959,20 +1972,20 @@ def render_wow_heatmap(m: dict[str, Any]) -> str:
     w, h = 900, 214
     style = """
       @keyframes fieldSweep {
-        0% { transform: translateX(-60px); }
+        0% { transform: translateX(-80px); }
         100% { transform: translateX(870px); }
       }
       @keyframes cellGlow {
-        0%, 100% { opacity: 0.72; }
+        0%, 100% { opacity: 0.35; }
         50% { opacity: 1; }
       }
-      .f-sweep { animation: fieldSweep 5.5s linear infinite; }
-      .c-live { animation: cellGlow 2.8s ease-in-out infinite; }
+      .f-sweep { animation: fieldSweep 4.0s linear infinite; }
+      .c-live { animation: cellGlow 2.4s ease-in-out infinite; }
     """
     defs = """
       <linearGradient id="heatSweep" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
-        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.22"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.45"/>
         <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
       </linearGradient>
       <clipPath id="heatGridClip">
