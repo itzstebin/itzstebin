@@ -1,0 +1,60 @@
+name: Auto-Update Profile README & SVGs
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "profile.config.json"
+      - "scripts/generate_profile.py"
+      - ".github/workflows/update-profile.yml"
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: "Theme to activate in root README.md"
+        required: false
+        default: "keep-current"
+        type: choice
+        options:
+          - keep-current
+          - aquarium
+          - title-sequence
+          - repo-galaxy
+
+permissions:
+  contents: write
+
+jobs:
+  update-profile:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate live SVGs and READMEs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          THEME_ARG: ${{ inputs.theme || 'keep-current' }}
+        run: python scripts/generate_profile.py --theme "$THEME_ARG"
+
+      - name: Commit and push updated profile
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md profile.config.json assets/ themes/ data/github_snapshot.json preview.html
+          if git diff --cached --quiet; then
+            echo "No profile updates to commit."
+          else
+            git commit -m "chore: auto-update profile README and SVG assets"
+            git push
+          fi
