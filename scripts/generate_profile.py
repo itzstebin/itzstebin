@@ -19,6 +19,7 @@ import math
 import os
 import random
 import re
+import shutil
 import sys
 import urllib.error
 import urllib.request
@@ -1540,69 +1541,78 @@ def render_preview_html(m: dict[str, Any]) -> str:
 """
 
 
-def write_all_themes(m: dict[str, Any], active_theme: str, config: dict[str, Any]) -> None:
-    # 1. Aquarium SVGs
-    aq_dir = ASSETS_DIR / "aquarium"
-    aq_dir.mkdir(parents=True, exist_ok=True)
-    (aq_dir / "tank.svg").write_text(render_aquarium_tank(m), encoding="utf-8")
-    (aq_dir / "about.svg").write_text(render_about_svg(m, "aquarium"), encoding="utf-8")
-    for i, repo in enumerate(m["repos"][:4]):
-        (aq_dir / f"card-{i}.svg").write_text(render_card_svg(repo, i, "aquarium"), encoding="utf-8")
-    (aq_dir / "stack.svg").write_text(render_stack_svg(m, "aquarium"), encoding="utf-8")
-    (aq_dir / "log.svg").write_text(render_log_svg(m, "aquarium"), encoding="utf-8")
+def write_theme_assets(m: dict[str, Any], theme_key: str) -> None:
+    t_dir = ASSETS_DIR / theme_key
+    t_dir.mkdir(parents=True, exist_ok=True)
+    if theme_key == "aquarium":
+        (t_dir / "tank.svg").write_text(render_aquarium_tank(m), encoding="utf-8")
+        (t_dir / "about.svg").write_text(render_about_svg(m, "aquarium"), encoding="utf-8")
+        for i, repo in enumerate(m["repos"][:4]):
+            (t_dir / f"card-{i}.svg").write_text(render_card_svg(repo, i, "aquarium"), encoding="utf-8")
+        (t_dir / "stack.svg").write_text(render_stack_svg(m, "aquarium"), encoding="utf-8")
+        (t_dir / "log.svg").write_text(render_log_svg(m, "aquarium"), encoding="utf-8")
+    elif theme_key == "title-sequence":
+        (t_dir / "hero.svg").write_text(render_title_hero(m), encoding="utf-8")
+        (t_dir / "about.svg").write_text(render_about_svg(m, "title-sequence"), encoding="utf-8")
+        (t_dir / "cast.svg").write_text(render_title_cast(m), encoding="utf-8")
+        (t_dir / "stack.svg").write_text(render_stack_svg(m, "title-sequence"), encoding="utf-8")
+        (t_dir / "log.svg").write_text(render_log_svg(m, "title-sequence"), encoding="utf-8")
+    else:
+        (t_dir / "galaxy.svg").write_text(render_repo_galaxy(m), encoding="utf-8")
+        (t_dir / "about.svg").write_text(render_about_svg(m, "repo-galaxy"), encoding="utf-8")
+        for i, repo in enumerate(m["repos"][:4]):
+            (t_dir / f"card-{i}.svg").write_text(render_card_svg(repo, i, "repo-galaxy"), encoding="utf-8")
+        (t_dir / "stack.svg").write_text(render_stack_svg(m, "repo-galaxy"), encoding="utf-8")
+        (t_dir / "log.svg").write_text(render_log_svg(m, "repo-galaxy"), encoding="utf-8")
 
-    # 2. Title Sequence SVGs
-    ts_dir = ASSETS_DIR / "title-sequence"
-    ts_dir.mkdir(parents=True, exist_ok=True)
-    (ts_dir / "hero.svg").write_text(render_title_hero(m), encoding="utf-8")
-    (ts_dir / "about.svg").write_text(render_about_svg(m, "title-sequence"), encoding="utf-8")
-    (ts_dir / "cast.svg").write_text(render_title_cast(m), encoding="utf-8")
-    (ts_dir / "stack.svg").write_text(render_stack_svg(m, "title-sequence"), encoding="utf-8")
-    (ts_dir / "log.svg").write_text(render_log_svg(m, "title-sequence"), encoding="utf-8")
 
-    # 3. Repo Galaxy SVGs
-    rg_dir = ASSETS_DIR / "repo-galaxy"
-    rg_dir.mkdir(parents=True, exist_ok=True)
-    (rg_dir / "galaxy.svg").write_text(render_repo_galaxy(m), encoding="utf-8")
-    (rg_dir / "about.svg").write_text(render_about_svg(m, "repo-galaxy"), encoding="utf-8")
-    for i, repo in enumerate(m["repos"][:4]):
-        (rg_dir / f"card-{i}.svg").write_text(render_card_svg(repo, i, "repo-galaxy"), encoding="utf-8")
-    (rg_dir / "stack.svg").write_text(render_stack_svg(m, "repo-galaxy"), encoding="utf-8")
-    (rg_dir / "log.svg").write_text(render_log_svg(m, "repo-galaxy"), encoding="utf-8")
-
-    # Write theme READMEs + active root README
-    for key in THEMES:
-        t_dir = THEMES_DIR / key
-        t_dir.mkdir(parents=True, exist_ok=True)
-        (t_dir / "README.md").write_text(
-            render_readme(m, key, asset_prefix="../../assets", root_prefix="../..", config=config),
-            encoding="utf-8",
-        )
+def write_outputs(m: dict[str, Any], active_theme: str, config: dict[str, Any], all_themes: bool = False) -> None:
+    if all_themes:
+        for key in THEMES:
+            write_theme_assets(m, key)
+            t_dir = THEMES_DIR / key
+            t_dir.mkdir(parents=True, exist_ok=True)
+            (t_dir / "README.md").write_text(
+                render_readme(m, key, asset_prefix="../../assets", root_prefix="../..", config=config),
+                encoding="utf-8",
+            )
+        (ROOT_DIR / "preview.html").write_text(render_preview_html(m), encoding="utf-8")
+    else:
+        write_theme_assets(m, active_theme)
+        for key in THEMES:
+            if key != active_theme and (ASSETS_DIR / key).exists():
+                shutil.rmtree(ASSETS_DIR / key)
+        if THEMES_DIR.exists():
+            shutil.rmtree(THEMES_DIR)
+        preview_file = ROOT_DIR / "preview.html"
+        if preview_file.exists():
+            preview_file.unlink()
 
     (ROOT_DIR / "README.md").write_text(
         render_readme(m, active_theme, asset_prefix="./assets", root_prefix=".", config=config),
         encoding="utf-8",
     )
-    (ROOT_DIR / "preview.html").write_text(render_preview_html(m), encoding="utf-8")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate animated GitHub profile SVGs & READMEs.")
     parser.add_argument("--theme", choices=[*THEMES.keys(), "keep-current"], default="keep-current")
+    parser.add_argument("--all-themes", action="store_true", help="Also generate inactive theme folders and preview.html.")
     parser.add_argument("--offline", action="store_true", help="Use cached data/github_snapshot.json without network calls.")
     args = parser.parse_args()
 
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    active_theme = config.get("active_theme", "aquarium")
+    active_theme = config.get("active_theme", "repo-galaxy")
     if args.theme != "keep-current":
         active_theme = args.theme
         config["active_theme"] = active_theme
-        CONFIG_PATH.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
+        CONFIG_PATH.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     data = fetch_github_data(config.get("username", "itzstebin"), offline=args.offline)
     metrics = prepare_metrics(data, config)
-    write_all_themes(metrics, active_theme, config)
-    print(f"Generated 3 themes + root README.md (active={active_theme}, repos={len(metrics['repos'])}, contributions={metrics['total_contributions']})")
+    all_themes = args.all_themes or bool(config.get("generate_all_themes", False))
+    write_outputs(metrics, active_theme, config, all_themes=all_themes)
+    print(f"Generated README.md (active={active_theme}, all_themes={all_themes}, repos={len(metrics['repos'])}, contributions={metrics['total_contributions']})")
     return 0
 
 
