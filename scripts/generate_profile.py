@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import html
+import io
 import json
 import math
 import os
@@ -29,6 +30,7 @@ from typing import Any
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = ROOT_DIR / "profile.config.json"
 SNAPSHOT_PATH = ROOT_DIR / "data" / "github_snapshot.json"
+PORTRAIT_PATH = ROOT_DIR / "data" / "portrait_grid.json"
 ASSETS_DIR = ROOT_DIR / "assets"
 THEMES_DIR = ROOT_DIR / "themes"
 
@@ -97,6 +99,22 @@ THEMES: dict[str, dict[str, Any]] = {
         "pill_bg": "#131c42",
         "heat": ["#0e1530", "#27246e", "#4338ca", "#3b82f6", "#7dd3fc"],
         "footer_note": "Repo Galaxy · each star is a repository, sized by stars",
+    },
+    "wow-profile": {
+        "title": "Wow Profile",
+        "subtitle": "Living Identity Blueprint",
+        "bg": "#060b16",
+        "bg_alt": "#0b1326",
+        "border": "#1b2e54",
+        "accent": "#60a5fa",
+        "accent_soft": "#2563eb",
+        "accent_2": "#38bdf8",
+        "text": "#f1f5f9",
+        "muted": "#94a3b8",
+        "dim": "#52698c",
+        "pill_bg": "#0e1a33",
+        "heat": ["#0b1326", "#172554", "#1d4ed8", "#3b82f6", "#7dd3fc"],
+        "footer_note": "Wow Profile · living identity · auto-updated from GitHub",
     },
 }
 
@@ -271,6 +289,8 @@ def fetch_graphql(username: str, token: str) -> dict[str, Any]:
             stargazerCount
             forkCount
             isFork
+            createdAt
+            pushedAt
             updatedAt
             primaryLanguage { name }
             repositoryTopics(first: 10) {
@@ -333,6 +353,8 @@ def fetch_graphql(username: str, token: str) -> dict[str, Any]:
                 "fork": r["isFork"],
                 "language": r["primaryLanguage"]["name"] if r["primaryLanguage"] else None,
                 "topics": topics,
+                "created_at": r["createdAt"],
+                "pushed_at": r["pushedAt"],
                 "updated_at": r["updatedAt"],
                 "languages": langs,
             }
@@ -424,6 +446,8 @@ def fetch_github_data(username: str, offline: bool = False) -> dict[str, Any]:
                     "fork": r.get("fork", False),
                     "language": r.get("language"),
                     "topics": r.get("topics", []),
+                    "created_at": r.get("created_at", ""),
+                    "pushed_at": r.get("pushed_at", ""),
                     "updated_at": r.get("updated_at", ""),
                     "languages": langs,
                 }
@@ -500,16 +524,22 @@ def prepare_metrics(data: dict[str, Any], config: dict[str, Any]) -> dict[str, A
     contrib = data.get("contributions", {})
     days = sorted(contrib.get("days", []), key=lambda d: d["date"])
 
-    # Build last 26 weeks grid (columns = weeks, rows = days Sun..Sat)
+    # Build last 26 weeks grid and full 52-week grid
     last_days = days[-182:] if len(days) >= 182 else days
     weeks: list[list[dict[str, Any]]] = []
     for i in range(0, len(last_days), 7):
         weeks.append(last_days[i : i + 7])
     weekly_totals = [sum(d.get("count", 0) for d in w) for w in weeks]
 
+    weeks_52: list[list[dict[str, Any]]] = []
+    for i in range(0, len(days), 7):
+        weeks_52.append(days[i : i + 7])
+    weeks_52 = weeks_52[-52:]
+
     return {
         "username": config.get("username") or user.get("login", "itzstebin"),
         "display_name": config.get("display_name") or user.get("name") or "Stebin S",
+        "avatar_url": user.get("avatar_url", ""),
         "headline": config.get("headline", "Developer · Cybersecurity Learner"),
         "bio": config.get("bio", ""),
         "mantra": config.get("mantra", ""),
@@ -525,6 +555,7 @@ def prepare_metrics(data: dict[str, Any], config: dict[str, Any]) -> dict[str, A
         "repos": enriched_repos,
         "languages": lang_list,
         "weeks": weeks,
+        "weeks_52": weeks_52,
         "weekly_totals": weekly_totals,
         "skills": config.get("skills", []),
         "beyond_code": config.get("beyond_code", []),
@@ -1054,7 +1085,8 @@ def render_about_svg(m: dict[str, Any], theme_key: str) -> str:
         "aquarium": "OBSERVATION DECK · ABOUT",
         "title-sequence": "DIRECTOR'S LOGLINE · ABOUT",
         "repo-galaxy": "MISSION BRIEFING · ABOUT",
-    }[theme_key]
+        "wow-profile": "LIVING IDENTITY · ABOUT",
+    }.get(theme_key, "ABOUT")
 
     bio_lines = wrap_lines(m["bio"], 76, max_lines=2)
     stats = [
@@ -1167,10 +1199,12 @@ def render_stack_svg(m: dict[str, Any], theme_key: str) -> str:
         "aquarium": "WATER CHEMISTRY · LANGUAGE STACK",
         "title-sequence": "THE CAST · LANGUAGES & PRODUCTION GEAR",
         "repo-galaxy": "ELEMENTS · LANGUAGE COMPOSITION",
-    }[theme_key]
+        "wow-profile": "THE TOOLS BEHIND THE SIGNAL",
+    }.get(theme_key, "LANGUAGE STACK")
 
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44) if theme_key == "wow-profile" else "",
         f'<text x="28" y="34" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">{esc(heading)}</text>',
         f'<line x1="468" y1="54" x2="468" y2="210" stroke="{t["border"]}" stroke-width="1" stroke-dasharray="3 4"/>',
     ]
@@ -1225,7 +1259,8 @@ def render_log_svg(m: dict[str, Any], theme_key: str) -> str:
         "aquarium": "DEPTH LOG · LAST 26 WEEKS",
         "title-sequence": "BOX OFFICE · 26-WEEK PRODUCTION LOG",
         "repo-galaxy": "ORBITAL ACTIVITY · LAST 26 WEEKS",
-    }[theme_key]
+        "wow-profile": "SIGNAL TRAIL · LAST 26 WEEKS",
+    }.get(theme_key, "CONTRIBUTION LOG")
 
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
@@ -1306,6 +1341,441 @@ def render_log_svg(m: dict[str, Any], theme_key: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Theme 4: Wow Profile (Living Identity Blueprint)
+# ---------------------------------------------------------------------------
+
+ASCII_FONT: dict[str, list[str]] = {
+    "A": [" ### ", "#   #", "#####", "#   #", "#   #", "#   #", "#   #"],
+    "B": ["#### ", "#   #", "#### ", "#   #", "#   #", "#   #", "#### "],
+    "C": [" ####", "#    ", "#    ", "#    ", "#    ", "#    ", " ####"],
+    "D": ["#### ", "#   #", "#   #", "#   #", "#   #", "#   #", "#### "],
+    "E": ["#####", "#    ", "#### ", "#    ", "#    ", "#    ", "#####"],
+    "F": ["#####", "#    ", "#### ", "#    ", "#    ", "#    ", "#    "],
+    "G": [" ####", "#    ", "#    ", "#  ##", "#   #", "#   #", " ####"],
+    "H": ["#   #", "#   #", "#####", "#   #", "#   #", "#   #", "#   #"],
+    "I": ["###", " # ", " # ", " # ", " # ", " # ", "###"],
+    "J": ["  ###", "   # ", "   # ", "   # ", "#  # ", "#  # ", " ##  "],
+    "K": ["#   #", "#  # ", "###  ", "#  # ", "#   #", "#   #", "#   #"],
+    "L": ["#    ", "#    ", "#    ", "#    ", "#    ", "#    ", "#####"],
+    "M": ["#   #", "## ##", "# # #", "#   #", "#   #", "#   #", "#   #"],
+    "N": ["#   #", "##  #", "# # #", "#  ##", "#   #", "#   #", "#   #"],
+    "O": [" ### ", "#   #", "#   #", "#   #", "#   #", "#   #", " ### "],
+    "P": ["#### ", "#   #", "#   #", "#### ", "#    ", "#    ", "#    "],
+    "Q": [" ### ", "#   #", "#   #", "#   #", "# # #", "#  # ", " ## #"],
+    "R": ["#### ", "#   #", "#   #", "#### ", "#  # ", "#   #", "#   #"],
+    "S": [" ####", "#    ", " ### ", "    #", "    #", "#   #", " ### "],
+    "T": ["#####", "  #  ", "  #  ", "  #  ", "  #  ", "  #  ", "  #  "],
+    "U": ["#   #", "#   #", "#   #", "#   #", "#   #", "#   #", " ### "],
+    "V": ["#   #", "#   #", "#   #", "#   #", " # # ", " # # ", "  #  "],
+    "W": ["#   #", "#   #", "#   #", "#   #", "# # #", "## ##", "#   #"],
+    "X": ["#   #", " # # ", "  #  ", "  #  ", " # # ", "#   #", "#   #"],
+    "Y": ["#   #", " # # ", "  #  ", "  #  ", "  #  ", "  #  ", "  #  "],
+    "Z": ["#####", "   # ", "  #  ", " #   ", "#    ", "#    ", "#####"],
+    "0": [" ### ", "#   #", "#  ##", "# # #", "##  #", "#   #", " ### "],
+    "1": ["  #  ", " ##  ", "  #  ", "  #  ", "  #  ", "  #  ", "#####"],
+    "2": [" ### ", "#   #", "   # ", "  #  ", " #   ", "#    ", "#####"],
+    "3": ["#### ", "    #", " ### ", "    #", "    #", "#   #", " ### "],
+    "4": ["#   #", "#   #", "#####", "    #", "    #", "    #", "    #"],
+    "5": ["#####", "#    ", "#### ", "    #", "    #", "#   #", " ### "],
+    "6": [" ### ", "#    ", "#### ", "#   #", "#   #", "#   #", " ### "],
+    "7": ["#####", "    #", "   # ", "  #  ", " #   ", " #   ", " #   "],
+    "8": [" ### ", "#   #", " ### ", "#   #", "#   #", "#   #", " ### "],
+    "9": [" ### ", "#   #", "#   #", " ####", "    #", "    #", " ### "],
+    "-": ["     ", "     ", "     ", "#####", "     ", "     ", "     "],
+    ".": ["     ", "     ", "     ", "     ", "     ", " ##  ", " ##  "],
+    " ": ["   ", "   ", "   ", "   ", "   ", "   ", "   "],
+}
+
+
+def ascii_word_lines(word: str) -> list[str]:
+    clean = [c for c in word.upper() if c in ASCII_FONT]
+    if not clean:
+        clean = list("USER")
+    rows = [""] * 7
+    for idx, ch in enumerate(clean):
+        glyph = ASCII_FONT[ch]
+        for r in range(7):
+            # Stylize block strokes with crisp matrix texture (# and +)
+            styled = "".join("#" if (c == "#" and (r + i) % 2 == 0) else ("+" if c == "#" else " ") for i, c in enumerate(glyph[r]))
+            rows[r] += styled + ("  " if idx < len(clean) - 1 else "")
+    return rows
+
+
+def fetch_or_load_portrait(avatar_url: str, offline: bool = False) -> list[list[list[str]]]:
+    if not offline and avatar_url:
+        try:
+            from PIL import Image, ImageEnhance  # optional dependency
+
+            url = avatar_url + ("&s=256" if "?" in avatar_url else "?s=256")
+            raw = urllib.request.urlopen(
+                urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=15
+            ).read()
+            im = Image.open(io.BytesIO(raw)).convert("RGB")
+            im = ImageEnhance.Contrast(im).enhance(1.22)
+            im = ImageEnhance.Brightness(im).enhance(1.06)
+            cols, rows = 50, 32
+            im = im.resize((cols, rows), Image.Resampling.LANCZOS)
+            px = im.load()
+            chars = " .:-=+*#%@"
+            cx, cy = (cols - 1) / 2.0, (rows - 1) / 2.0
+            grid: list[list[list[str]]] = []
+            for y in range(rows):
+                row_cells: list[list[str]] = []
+                for x in range(cols):
+                    nx = (x - cx) / (cols / 2.0)
+                    ny = (y - cy) / (rows / 2.0)
+                    dist = math.hypot(nx, ny)
+                    if dist > 1.03:
+                        row_cells.append([" ", ""])
+                        continue
+                    r, g, b = px[x, y]
+                    lum = 0.299 * r + 0.587 * g + 0.114 * b
+                    fade = 1.0 if dist < 0.84 else max(0.28, 1.0 - (dist - 0.84) / 0.22)
+                    ci = min(len(chars) - 1, max(1, int((lum * fade / 255.0) * (len(chars) - 1))))
+                    if lum * fade < 28:
+                        col = "#1e3a5f"
+                    else:
+                        qr = min(255, int(round((r * fade) / 32) * 32))
+                        qg = min(255, int(round((g * fade) / 32) * 32))
+                        qb = min(255, int(round((b * fade) / 32) * 32))
+                        col = f"#{qr:02x}{qg:02x}{qb:02x}"
+                    row_cells.append([chars[ci], col])
+                grid.append(row_cells)
+            PORTRAIT_PATH.parent.mkdir(parents=True, exist_ok=True)
+            PORTRAIT_PATH.write_text(json.dumps(grid, separators=(",", ":")), encoding="utf-8")
+            return grid
+        except Exception as exc:
+            print(f"[info] Portrait refresh skipped ({exc}); using cached portrait grid.", file=sys.stderr)
+
+    if PORTRAIT_PATH.exists():
+        return json.loads(PORTRAIT_PATH.read_text(encoding="utf-8"))
+    return []
+
+
+def blueprint_grid(w: int, h: int, step: int = 44) -> str:
+    lines = []
+    for x in range(step, w, step):
+        lines.append(f'<line x1="{x}" y1="0" x2="{x}" y2="{h}" stroke="#0d1930" stroke-width="1"/>')
+    for y in range(step, h, step):
+        lines.append(f'<line x1="0" y1="{y}" x2="{w}" y2="{y}" stroke="#0d1930" stroke-width="1"/>')
+    return "\n".join(lines)
+
+
+def render_wow_hero(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 434
+    style = """
+      @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes pulseDot {
+        0%, 100% { opacity: 0.45; }
+        50% { opacity: 1; }
+      }
+      .orbit-ring { transform-box: fill-box; transform-origin: center; animation: spinSlow 42s linear infinite; }
+      .live-dot { animation: pulseDot 2.4s ease-in-out infinite; }
+    """
+    defs = """
+      <radialGradient id="wowGlow" cx="76%" cy="42%" r="48%">
+        <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.28"/>
+        <stop offset="60%" stop-color="#0f172a" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="#060b16" stop-opacity="0"/>
+      </radialGradient>
+      <clipPath id="wowClip">
+        <rect x="1" y="1" width="898" height="432" rx="18"/>
+      </clipPath>
+    """
+    parts = [
+        '<g clip-path="url(#wowClip)">',
+        f'<rect width="{w}" height="{h}" fill="{t["bg"]}"/>',
+        blueprint_grid(w, h, 44),
+        f'<rect width="{w}" height="{h}" fill="url(#wowGlow)"/>',
+        # Top header bar
+        f'<text x="36" y="36" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11" letter-spacing="2.4">LIVING IDENTITY / @{esc(m["username"].upper())}</text>',
+        '<circle class="live-dot" cx="748" cy="32" r="4" fill="#34d399"/>',
+        f'<text x="864" y="36" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11">LIVE · @{esc(m["username"])}</text>',
+        f'<text x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M</text>',
+    ]
+
+    # ASCII wordmark (keep full display_name on 1 crisp row when <= 10 chars, else split)
+    full_name = m["display_name"].strip() or m["username"]
+    name_rows = [full_name] if len(full_name) <= 10 else (full_name.split()[:2] or [full_name])
+    y_cursor = 128 if len(name_rows) == 1 else 112
+    for word in name_rows:
+        font_sz = 13.0 if len(word) <= 8 else (11.0 if len(word) <= 10 else 8.8)
+        line_step = 15.0 if len(word) <= 8 else (12.5 if len(word) <= 10 else 9.8)
+        for row_txt in ascii_word_lines(word):
+            parts.append(
+                f'<text x="36" y="{y_cursor:.1f}" fill="#e2e8f0" xml:space="preserve" '
+                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.4">{esc(row_txt)}</text>'
+            )
+            y_cursor += line_step
+        y_cursor += 12
+
+    lang_line = " / ".join(l["name"] for l in m["languages"][:4]) or "Full-Stack"
+    parts.append(
+        f'<text x="36" y="276" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="14.5" font-weight="600">{esc(lang_line)}</text>'
+    )
+    parts.append(
+        f'<text x="36" y="302" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12">{esc(truncate(m["headline"], 50))}</text>'
+    )
+
+    # Right orbital reticle + ASCII portrait
+    pcx, pcy = 696, 178
+    parts.append(f'<circle cx="{pcx}" cy="{pcy}" r="134" fill="none" stroke="#1e3a5f" stroke-width="1" opacity="0.65"/>')
+    parts.append(
+        f'<circle class="orbit-ring" cx="{pcx}" cy="{pcy}" r="146" fill="none" stroke="#3b82f6" '
+        f'stroke-width="1.1" stroke-dasharray="18 12 4 12" opacity="0.45"/>'
+    )
+    grid = m.get("portrait_grid") or []
+    if grid:
+        rows_cnt = len(grid)
+        cols_cnt = len(grid[0]) if rows_cnt else 0
+        char_w = 4.6
+        row_h = 7.4
+        start_x = pcx - (cols_cnt * char_w) / 2.0
+        start_y = pcy - (rows_cnt * row_h) / 2.0 + 6
+        for ri, row in enumerate(grid):
+            runs: list[tuple[str, str]] = []
+            for ch, col in row:
+                if runs and runs[-1][1] == col:
+                    runs[-1] = (runs[-1][0] + ch, col)
+                else:
+                    runs.append((ch, col))
+            tspans = []
+            for seg, col in runs:
+                if not col:
+                    tspans.append(esc(seg))
+                else:
+                    tspans.append(f'<tspan fill="{col}">{esc(seg)}</tspan>')
+            parts.append(
+                f'<text x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
+                f'font-family="{FONT_MONO}" font-size="7.4" font-weight="700">{"".join(tspans)}</text>'
+            )
+
+    # Bottom divider & 4 live stats
+    parts.append('<line x1="36" y1="338" x2="864" y2="338" stroke="#182a4d" stroke-width="1"/>')
+    stats = [
+        ("REPOSITORIES", str(m["public_repos"])),
+        ("STARS", str(m["total_stars"])),
+        ("CONTRIBUTIONS", str(m["total_contributions"])),
+        ("FOLLOWERS", str(m["followers"])),
+    ]
+    xs = [36, 250, 470, 695]
+    for idx, (lbl, val) in enumerate(stats):
+        sx = xs[idx]
+        parts.append(
+            f'<text x="{sx}" y="366" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10.5" letter-spacing="1.8">{lbl}</text>'
+        )
+        parts.append(
+            f'<text x="{sx}" y="402" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="28" font-weight="700">{esc(val)}</text>'
+        )
+        if idx < len(stats) - 1:
+            parts.append(f'<circle cx="{xs[idx+1] - 32}" cy="363" r="3" fill="{t["accent"]}"/>')
+
+    parts.append('</g>')
+    parts.append(f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="18" fill="none" stroke="{t["border"]}" stroke-width="1.5"/>')
+    return svg_wrap(w, h, "\n".join(parts), style=style, defs=defs)
+
+
+def render_wow_highlights(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 192
+    items = m["extra_highlights"][:3]
+    parts = [
+        f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44),
+        f'<text x="28" y="34" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">SIGNAL PILLARS · WHAT MOVES THE WORK</text>',
+    ]
+    card_w = 268
+    for idx, item in enumerate(items):
+        cx = 28 + idx * (card_w + 20)
+        cy = 50
+        parts.append(
+            f'<rect x="{cx}" y="{cy}" width="{card_w}" height="122" rx="12" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1"/>'
+        )
+        parts.append(
+            f'<text x="{cx+16}" y="{cy+24}" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="10" font-weight="700">{idx+1:02d} · {esc(truncate(item.get("tag", "FOCUS"), 24))}</text>'
+        )
+        parts.append(
+            f'<text x="{cx+16}" y="{cy+48}" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="16" font-weight="800">{esc(truncate(item["name"], 22))}</text>'
+        )
+        for li, line in enumerate(wrap_lines(item["summary"], 40, max_lines=3)):
+            parts.append(
+                f'<text x="{cx+16}" y="{cy+72 + li*16}" fill="{t["muted"]}" font-family="{FONT_SANS}" font-size="11.5">{esc(line)}</text>'
+            )
+    return svg_wrap(w, h, "\n".join(parts))
+
+
+def render_wow_constellation(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 260
+    repos = m["repos"][:5]
+    nodes = [
+        (138, 72),
+        (762, 72),
+        (138, 200),
+        (450, 212),
+        (762, 200),
+    ]
+    hub_x, hub_y = 450, 102
+    parts = [
+        f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44),
+        f'<text x="28" y="34" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">PROJECT CONSTELLATION · LIVE REPOSITORIES</text>',
+    ]
+    for idx, repo in enumerate(repos):
+        nx, ny = nodes[idx]
+        lcol = get_lang_color(repo.get("language"))
+        parts.append(
+            f'<line x1="{hub_x}" y1="{hub_y}" x2="{nx}" y2="{ny}" stroke="{lcol}" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.5"/>'
+        )
+    # Central hub
+    parts.append(f'<circle cx="{hub_x}" cy="{hub_y}" r="36" fill="{t["bg_alt"]}" stroke="{t["accent"]}" stroke-width="1.5"/>')
+    parts.append(
+        f'<text x="{hub_x}" y="{hub_y-2}" text-anchor="middle" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700">@{esc(m["username"])}</text>'
+    )
+    parts.append(
+        f'<text x="{hub_x}" y="{hub_y+14}" text-anchor="middle" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="10">{m["total_stars"]} ★</text>'
+    )
+
+    for idx, repo in enumerate(repos):
+        nx, ny = nodes[idx]
+        lcol = get_lang_color(repo.get("language"))
+        cw, ch = 222, 54
+        rx, ry = nx - cw / 2, ny - ch / 2
+        parts.append(
+            f'<rect x="{rx:.1f}" y="{ry:.1f}" width="{cw}" height="{ch}" rx="10" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1.2"/>'
+        )
+        parts.append(f'<circle cx="{rx+16:.1f}" cy="{ry+20:.1f}" r="4.5" fill="{lcol}"/>')
+        parts.append(
+            f'<text x="{rx+28:.1f}" y="{ry+24:.1f}" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="13.5" font-weight="700">{esc(truncate(repo["display_name"], 20))}</text>'
+        )
+        parts.append(
+            f'<text x="{rx+cw-14:.1f}" y="{ry+24:.1f}" text-anchor="end" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700">★ {repo.get("stargazers_count", 0)}</text>'
+        )
+        parts.append(
+            f'<text x="{rx+16:.1f}" y="{ry+42:.1f}" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="10">{esc(repo.get("language") or "Code")} · {esc(truncate(repo.get("badge") or "Public", 18))}</text>'
+        )
+    return svg_wrap(w, h, "\n".join(parts))
+
+
+def render_wow_timeline(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 174
+    # Sort chronologically by created_at or updated_at
+    chron = sorted(
+        m["repos"],
+        key=lambda r: (r.get("created_at") or r.get("updated_at") or "9999"),
+    )[-5:]
+    parts = [
+        f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44),
+        f'<text x="28" y="32" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">SHIPPING TIMELINE · CHRONOLOGICAL</text>',
+        f'<line x1="70" y1="96" x2="830" y2="96" stroke="{t["border"]}" stroke-width="2"/>',
+    ]
+    count = len(chron)
+    for idx, repo in enumerate(chron):
+        x = 120 + idx * (660 // max(1, count - 1)) if count > 1 else 450
+        lcol = get_lang_color(repo.get("language"))
+        date_str = (repo.get("created_at") or repo.get("updated_at") or "")[:7] or "LIVE"
+        above = idx % 2 == 0
+        parts.append(
+            f'<line x1="{x}" y1="96" x2="{x}" y2="{76 if above else 116}" stroke="{t["border"]}" stroke-width="1.5"/>'
+        )
+        parts.append(f'<circle cx="{x}" cy="96" r="6" fill="{lcol}" stroke="{t["bg"]}" stroke-width="2"/>')
+        ly = 56 if above else 132
+        parts.append(
+            f'<text x="{x}" y="{ly}" text-anchor="middle" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="12" font-weight="700">{esc(truncate(repo["display_name"], 22))}</text>'
+        )
+        parts.append(
+            f'<text x="{x}" y="{ly+15}" text-anchor="middle" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">{esc(date_str)} · ★ {repo.get("stargazers_count", 0)}</text>'
+        )
+    return svg_wrap(w, h, "\n".join(parts))
+
+
+def render_wow_stats(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 140
+    parts = [
+        f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44),
+        f'<text x="28" y="32" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">MOMENTUM · LIVE SIGNAL TELEMETRY</text>',
+    ]
+    cards = [
+        ("YEARLY COMMITS", str(m["total_contributions"]), "last 12 months"),
+        ("ACTIVE DAYS", str(m["active_days"]), "days shipped"),
+        ("LONGEST STREAK", f'{m["longest_streak"]}d', "consecutive run"),
+        ("CURRENT STREAK", f'{m["current_streak"]}d', "live streak"),
+    ]
+    for i, (lbl, val, sub) in enumerate(cards):
+        bx = 28 + i * 214
+        by = 48
+        parts.append(
+            f'<rect x="{bx}" y="{by}" width="202" height="72" rx="11" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1"/>'
+        )
+        parts.append(
+            f'<text x="{bx+16}" y="{by+22}" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10" font-weight="700" letter-spacing="1">{lbl}</text>'
+        )
+        parts.append(
+            f'<text x="{bx+16}" y="{by+52}" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="24" font-weight="700">{esc(val)}</text>'
+        )
+        parts.append(
+            f'<text x="{bx+186}" y="{by+52}" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="10">{sub}</text>'
+        )
+    return svg_wrap(w, h, "\n".join(parts))
+
+
+def render_wow_heatmap(m: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    w, h = 900, 214
+    parts = [
+        f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
+        blueprint_grid(w, h, 44),
+        f'<text x="28" y="34" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">CONTRIBUTION ENERGY FIELD · 52 WEEKS</text>',
+        f'<text x="866" y="34" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11">{m["total_contributions"]} contributions · {m["active_days"]} active days</text>',
+    ]
+    weeks = m.get("weeks_52") or []
+    if not weeks:
+        weeks = [[{"level": 0, "count": 0} for _ in range(7)] for _ in range(52)]
+    ox, oy = 36, 66
+    cell, gap = 12, 4
+    heat = t["heat"]
+    last_month = ""
+    last_wi = -99
+    for wi, week in enumerate(weeks[-52:]):
+        if week and week[0].get("date"):
+            try:
+                m_lbl = dt.date.fromisoformat(week[0]["date"]).strftime("%b")
+                if m_lbl != last_month and (wi - last_wi) >= 3 and wi < len(weeks) - 1:
+                    last_month = m_lbl
+                    last_wi = wi
+                    mx = ox + wi * (cell + gap)
+                    parts.append(
+                        f'<text x="{mx}" y="56" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="9.5">{esc(m_lbl)}</text>'
+                    )
+            except ValueError:
+                pass
+        for di, day in enumerate(week[:7]):
+            lvl = max(0, min(4, int(day.get("level", 0))))
+            x = ox + wi * (cell + gap)
+            y = oy + di * (cell + gap)
+            parts.append(
+                f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.8" fill="{heat[lvl]}"/>'
+            )
+
+    parts.append(f'<text x="36" y="196" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">Less</text>')
+    for li, col in enumerate(heat):
+        parts.append(f'<rect x="{68 + li*15}" y="187" width="10" height="10" rx="2" fill="{col}"/>')
+    parts.append(f'<text x="148" y="196" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">More</text>')
+    parts.append(
+        f'<text x="866" y="196" text-anchor="end" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">Auto-synced · {esc(m["updated_date"])}</text>'
+    )
+    return svg_wrap(w, h, "\n".join(parts))
+
+
+# ---------------------------------------------------------------------------
 # README & Preview HTML Builders
 # ---------------------------------------------------------------------------
 
@@ -1313,6 +1783,9 @@ def render_readme(m: dict[str, Any], theme_key: str, asset_prefix: str, root_pre
     t = THEMES[theme_key]
     u = m["username"]
     ap = f"{asset_prefix}/{theme_key}"
+
+    if theme_key == "wow-profile":
+        return render_wow_readme(m, ap, root_prefix, config)
 
     lines: list[str] = ['<div align="center">', ""]
 
@@ -1420,6 +1893,152 @@ def render_readme(m: dict[str, Any], theme_key: str, asset_prefix: str, root_pre
     return "\n".join(lines)
 
 
+def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict[str, Any]) -> str:
+    t = THEMES["wow-profile"]
+    u = m["username"]
+    web = m.get("website", {})
+    web_link = f' · <a href="{web["url"]}">{esc(web["label"])}</a>' if web.get("url") else ""
+    web_txt = f' · {esc(web["label"])}' if web.get("label") else ""
+    focus_langs = " · ".join(f"`{l['name']}`" for l in m["languages"][:4])
+    all_langs_sub = " · ".join(l["name"] for l in m["languages"])
+    sep = '<p align="center"><sub>✦ ───────────────────────────── ✦</sub></p>'
+
+    lines: list[str] = [
+        '<div align="center">',
+        "",
+        f'<sub>WOW PROFILE · @{esc(u.upper())} · LIVE</sub>',
+        "",
+        f'<picture><img src="{ap}/hero.svg" width="100%" alt="{esc(m["display_name"])} living identity and ASCII portrait"></picture>',
+        "",
+        f'**{esc(m["headline"])}**{web_txt}',
+        "",
+        f'`{esc(m["mantra"])}`',
+        "",
+        f'<p><a href="https://github.com/{u}">GitHub</a>{web_link}</p>',
+        "",
+        "</div>",
+        "",
+        sep,
+        "",
+        "## Identity, with signal",
+        "",
+        '<table width="100%">',
+        "  <tr>",
+        '    <td width="62%" valign="top">',
+        f'      <p>{esc(m["bio"])}</p>',
+        f'      <p><strong>Focus:</strong> {" · ".join(esc(l["name"]) for l in m["languages"][:4])}</p>',
+        f'      <p><sub>Beyond code: {esc(" · ".join(m["beyond_code"]))}</sub></p>',
+        "    </td>",
+        '    <td width="38%" valign="top">',
+        "      <p><code>LIVE SIGNAL</code></p>",
+        "      <p>",
+        f'        <strong>{m["public_repos"]}</strong> repositories<br/>',
+        f'        <strong>{m["total_stars"]}</strong> stars<br/>',
+        f'        <strong>{m["total_contributions"]}</strong> contributions<br/>',
+        f'        <strong>{m["followers"]}</strong> followers',
+        "      </p>",
+        "    </td>",
+        "  </tr>",
+        "</table>",
+        "",
+        sep,
+        "",
+        "## What moves the work",
+        "",
+        f'<picture><img src="{ap}/highlights.svg" width="100%" alt="Signal pillars and active focus"></picture>',
+        "",
+        '<p align="center"><sub>Built in public — learning by shipping, breaking, and refining.</sub></p>',
+        "",
+        sep,
+        "",
+        "## The tools behind the signal",
+        "",
+        f'<picture><img src="{ap}/stack.svg" width="100%" alt="Technology stack and focus areas"></picture>',
+        "",
+        f'<p align="center"><sub>{esc(all_langs_sub)} · chosen for the problem, not the hype</sub></p>',
+        "",
+        sep,
+        "",
+        "## Built, shipped, shared",
+        "",
+        f'<picture><img src="{ap}/constellation.svg" width="100%" alt="Project constellation"></picture>',
+        "",
+        f'<picture><img src="{ap}/timeline.svg" width="100%" alt="Shipping timeline"></picture>',
+        "",
+        '<table width="100%">',
+        "  <tr>",
+    ]
+    for repo in m["repos"][:4]:
+        lang = repo.get("language") or "Code"
+        stars = repo.get("stargazers_count", 0)
+        lines.extend([
+            '    <td width="25%" valign="top">',
+            f'      <p><strong><a href="{repo["html_url"]}">{esc(repo["display_name"])}</a></strong></p>',
+            f'      <p>{esc(truncate(repo["summary"], 95))}</p>',
+            f'      <p><sub>{esc(lang)} · ⭐ {stars}</sub></p>',
+            "    </td>",
+        ])
+    lines.extend([
+        "  </tr>",
+        "</table>",
+        "",
+        sep,
+        "",
+        "## Momentum, made visible",
+        "",
+        f'<picture><img src="{ap}/stats.svg" width="100%" alt="Live GitHub momentum stats"></picture>',
+        "",
+        sep,
+        "",
+        "## The trail behind the work",
+        "",
+        f'<picture><img src="{ap}/heatmap.svg" width="100%" alt="52-week contribution energy field"></picture>',
+        "",
+        f'<p align="center"><sub>{m["current_streak"]} day current streak · {m["longest_streak"]} day longest streak · {m["active_days"]} active days</sub></p>',
+        "",
+    ])
+
+    if config.get("include_3d_contrib") or config.get("include_snake"):
+        lines.extend([
+            "<details>",
+            "<summary><b>✨ 3D Contribution Skyline &amp; Contribution Snake (Auto-Updated)</b></summary>",
+            "",
+            '<div align="center">',
+            "",
+        ])
+        if config.get("include_3d_contrib"):
+            lines.append(
+                f'<img src="{root_prefix}/profile-3d-contrib/profile-night-view.svg" width="100%" alt="3D Contribution Graph"/>'
+            )
+            lines.append("")
+        if config.get("include_snake"):
+            lines.append(
+                f'<img src="https://raw.githubusercontent.com/{u}/{u}/output/github-contribution-grid-snake-dark.svg" width="95%" alt="Contribution Snake"/>'
+            )
+            lines.append("")
+        lines.extend(["</div>", "", "</details>", ""])
+
+    lines.extend([
+        sep,
+        "",
+        '<div align="center">',
+        "",
+        "<p><sub>KEEP THE SIGNAL MOVING</sub></p>",
+        "",
+        "## Make something worth noticing",
+        "",
+        "Always open to building useful tools, cybersecurity research, and creative software.",
+        "",
+        f'<p><a href="https://github.com/{u}">GitHub (@{u})</a>{web_link}</p>',
+        "",
+        f'<sub>{esc(t["footer_note"])} · auto-updated via GitHub Actions on {m["updated_date"]}</sub>',
+        "",
+        "</div>",
+        "",
+    ])
+    return "\n".join(lines)
+
+
 def render_preview_html(m: dict[str, Any]) -> str:
     sections_html = {}
     for key in THEMES:
@@ -1444,6 +2063,16 @@ def render_preview_html(m: dict[str, Any]) -> str:
               <p class="links">{" · ".join(f'<a href="{r["html_url"]}" target="_blank">{esc(r["display_name"])}</a>' for r in m["repos"][:6])}</p>
               <img class="full" src="{ap}/stack.svg" alt="Stack">
               <img class="full" src="{ap}/log.svg" alt="Log">
+            """
+        elif key == "wow-profile":
+            body = f"""
+              <img class="full" src="{ap}/hero.svg" alt="Hero">
+              <img class="full" src="{ap}/highlights.svg" alt="Highlights">
+              <img class="full" src="{ap}/stack.svg" alt="Stack">
+              <img class="full" src="{ap}/constellation.svg" alt="Constellation">
+              <img class="full" src="{ap}/timeline.svg" alt="Timeline">
+              <img class="full" src="{ap}/stats.svg" alt="Stats">
+              <img class="full" src="{ap}/heatmap.svg" alt="Heatmap">
             """
         else:
             body = f"""
@@ -1513,13 +2142,15 @@ def render_preview_html(m: dict[str, Any]) -> str:
         <strong>@{esc(m["username"])}</strong> · GitHub Profile README Preview
       </div>
       <div class="tabs">
-        <button class="active" data-tab="aquarium" onclick="showTab('aquarium', this)">Aquarium</button>
+        <button class="active" data-tab="wow-profile" onclick="showTab('wow-profile', this)">Wow Profile</button>
+        <button data-tab="aquarium" onclick="showTab('aquarium', this)">Aquarium</button>
         <button data-tab="title-sequence" onclick="showTab('title-sequence', this)">Title Sequence</button>
         <button data-tab="repo-galaxy" onclick="showTab('repo-galaxy', this)">Repo Galaxy</button>
       </div>
     </div>
     <div class="gh-card">
-      <div id="tab-aquarium" class="panel active">{sections_html["aquarium"]}</div>
+      <div id="tab-wow-profile" class="panel active">{sections_html["wow-profile"]}</div>
+      <div id="tab-aquarium" class="panel">{sections_html["aquarium"]}</div>
       <div id="tab-title-sequence" class="panel">{sections_html["title-sequence"]}</div>
       <div id="tab-repo-galaxy" class="panel">{sections_html["repo-galaxy"]}</div>
       <hr/>
@@ -1557,6 +2188,14 @@ def write_theme_assets(m: dict[str, Any], theme_key: str) -> None:
         (t_dir / "cast.svg").write_text(render_title_cast(m), encoding="utf-8")
         (t_dir / "stack.svg").write_text(render_stack_svg(m, "title-sequence"), encoding="utf-8")
         (t_dir / "log.svg").write_text(render_log_svg(m, "title-sequence"), encoding="utf-8")
+    elif theme_key == "wow-profile":
+        (t_dir / "hero.svg").write_text(render_wow_hero(m), encoding="utf-8")
+        (t_dir / "highlights.svg").write_text(render_wow_highlights(m), encoding="utf-8")
+        (t_dir / "stack.svg").write_text(render_stack_svg(m, "wow-profile"), encoding="utf-8")
+        (t_dir / "constellation.svg").write_text(render_wow_constellation(m), encoding="utf-8")
+        (t_dir / "timeline.svg").write_text(render_wow_timeline(m), encoding="utf-8")
+        (t_dir / "stats.svg").write_text(render_wow_stats(m), encoding="utf-8")
+        (t_dir / "heatmap.svg").write_text(render_wow_heatmap(m), encoding="utf-8")
     else:
         (t_dir / "galaxy.svg").write_text(render_repo_galaxy(m), encoding="utf-8")
         (t_dir / "about.svg").write_text(render_about_svg(m, "repo-galaxy"), encoding="utf-8")
@@ -1610,6 +2249,7 @@ def main() -> int:
 
     data = fetch_github_data(config.get("username", "itzstebin"), offline=args.offline)
     metrics = prepare_metrics(data, config)
+    metrics["portrait_grid"] = fetch_or_load_portrait(metrics.get("avatar_url", ""), offline=args.offline)
     all_themes = args.all_themes or bool(config.get("generate_all_themes", False))
     write_outputs(metrics, active_theme, config, all_themes=all_themes)
     print(f"Generated README.md (active={active_theme}, all_themes={all_themes}, repos={len(metrics['repos'])}, contributions={metrics['total_contributions']})")
