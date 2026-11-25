@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="390" viewBox="0 0 900 390" role="img">
+<defs>
+      <radialGradient id="stageGlow" cx="50%" cy="38%" r="60%">
+        <stop offset="0%" stop-color="#4d3409" stop-opacity="0.72"/>
+        <stop offset="55%" stop-color="#191309" stop-opacity="0.88"/>
+        <stop offset="100%" stop-color="#070605" stop-opacity="1"/>
+      </radialGradient>
+      <linearGradient id="goldTitle" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#fff7d6"/>
+        <stop offset="45%" stop-color="#f7cb5c"/>
+        <stop offset="100%" stop-color="#c28416"/>
+      </linearGradient>
+      <clipPath id="heroClip">
+        <rect x="1" y="1" width="898" height="388" rx="18"/>
+      </clipPath>
+    </defs>
+<style>
+      @keyframes shimmer {
+        0%, 100% { opacity: 0.22; }
+        50% { opacity: 0.42; }
+      }
+      .glow { animation: shimmer 5.5s ease-in-out infinite; }
+    </style>
+<g clip-path="url(#heroClip)">
+<rect width="900" height="390" fill="#070605"/>
+<rect width="900" height="390" fill="url(#stageGlow)" class="glow"/>
+<rect x="0" y="0" width="900" height="28" fill="#020202"/>
+<rect x="0" y="362" width="900" height="28" fill="#020202"/>
+<line x1="0" y1="28" x2="900" y2="28" stroke="#3b2c12" stroke-width="1"/>
+<line x1="0" y1="362" x2="900" y2="362" stroke="#3b2c12" stroke-width="1"/>
+<text x="450" y="64" text-anchor="middle" fill="#c9ab67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" letter-spacing="5">GITHUB PICTURES PRESENTS</text>
+<text x="454" y="138" text-anchor="middle" fill="#3a2705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="64" font-weight="900" letter-spacing="4">STEBIN S</text>
+<text x="452" y="135" text-anchor="middle" fill="#6b4a0d" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="64" font-weight="900" letter-spacing="4">STEBIN S</text>
+<text x="450" y="132" text-anchor="middle" fill="url(#goldTitle)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="64" font-weight="900" letter-spacing="4">STEBIN S</text>
+<text x="450" y="166" text-anchor="middle" fill="#d9c698" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="3.5">HTML · TYPESCRIPT · JAVASCRIPT DEVELOPER</text>
+<line x1="250" y1="184" x2="650" y2="184" stroke="#4a3818" stroke-width="1"/>
+<rect x="275" y="203" width="32" height="17" rx="4" fill="#f7df1e" fill-opacity="0.18" stroke="#f7df1e" stroke-width="1"/>
+<text x="291" y="215" text-anchor="middle" fill="#f7df1e" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700">JS</text>
+<text x="319" y="216" fill="#9a8b6c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5">starring <tspan fill="#fff5d8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="14">Whoisit</tspan></text>
+<text x="625" y="216" text-anchor="end" fill="#f5c451" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5" font-weight="700">★ 4</text>
+<rect x="275" y="231" width="32" height="17" rx="4" fill="#e34c26" fill-opacity="0.18" stroke="#e34c26" stroke-width="1"/>
+<text x="291" y="243" text-anchor="middle" fill="#e34c26" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700">HTML</text>
+<text x="319" y="244" fill="#9a8b6c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5">starring <tspan fill="#fff5d8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="14">priyo-smp-tracker</tspan></text>
+<text x="625" y="244" text-anchor="end" fill="#f5c451" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5" font-weight="700">★ 1</text>
+<rect x="275" y="259" width="32" height="17" rx="4" fill="#3178c6" fill-opacity="0.18" stroke="#3178c6" stroke-width="1"/>
+<text x="291" y="271" text-anchor="middle" fill="#3178c6" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700">TS</text>
+<text x="319" y="272" fill="#9a8b6c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5">starring <tspan fill="#fff5d8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="14">Mail-Hunter</tspan></text>
+<text x="625" y="272" text-anchor="end" fill="#f5c451" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5" font-weight="700">★ 1</text>
+<rect x="275" y="287" width="32" height="17" rx="4" fill="#3178c6" fill-opacity="0.18" stroke="#3178c6" stroke-width="1"/>
+<text x="291" y="299" text-anchor="middle" fill="#3178c6" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700">TS</text>
+<text x="319" y="300" fill="#9a8b6c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5">starring <tspan fill="#fff5d8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="14">Shanks (CybroatriX)</tspan></text>
+<text x="625" y="300" text-anchor="end" fill="#f5c451" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12.5" font-weight="700">★ 1</text>
+<text x="34" y="346" fill="#9a8b6c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">124 contributions  ·  3 followers  ·  8 repositories  ·  11 ★</text>
+<text x="866" y="346" text-anchor="end" fill="#c9ab67" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">@itzstebin · LIVE PRODUCTION</text>
+</g>
+<rect x="1" y="1" width="898" height="388" rx="18" fill="none" stroke="#463517" stroke-width="1.5"/>
+</svg>

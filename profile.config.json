@@ -1,0 +1,98 @@
+{
+  "username": "itzstebin",
+  "display_name": "Stebin S",
+  "active_theme": "aquarium",
+  "headline": "CSE Student \u00b7 Developer \u00b7 Cybersecurity Learner",
+  "subheadline": "Building things with code \u00b7 Learning Cybersecurity \u00b7 Exploring AI & Local Models",
+  "bio": "CSE student learning by building, breaking, and shipping \u2014 across web apps, cybersecurity & CTFs, local AI experiments, and open-source tools.",
+  "mantra": "Learn -> Build -> Break -> Debug -> Understand -> Improve",
+  "website": {
+    "label": "Cybroatrix",
+    "url": "https://cybroatrix.com"
+  },
+  "include_forks": true,
+  "excluded_repos": [
+    "itzstebin"
+  ],
+  "featured_order": [
+    "Whoisit",
+    "priyo-smp-tracker",
+    "Mail-Hunter",
+    "Shanks",
+    "Quantum-Enhanced-Adaptive-Urban-Traffic-Optimization",
+    "Guess-the-Number-Game"
+  ],
+  "repo_overrides": {
+    "Whoisit": {
+      "summary": "Privacy-first Instagram follower checker running locally in Chrome & Edge with zero password uploads.",
+      "badge": "Chrome Extension"
+    },
+    "priyo-smp-tracker": {
+      "summary": "Live Auction House browser, candlestick price graphs, and flipping radar for Priyo SMP.",
+      "badge": "Live on Vercel"
+    },
+    "Mail-Hunter": {
+      "summary": "React/Vite investigation workspace + native Kotlin Android app backed by Firebase & Gmail Watch.",
+      "badge": "Web + Android"
+    },
+    "Shanks": {
+      "display_name": "Shanks (CybroatriX)",
+      "summary": "CybroatriX web platform built with React, TypeScript, Vite, Framer Motion, and Firebase.",
+      "badge": "CybroatriX"
+    },
+    "Quantum-Enhanced-Adaptive-Urban-Traffic-Optimization": {
+      "display_name": "Quantum Traffic",
+      "summary": "Hybrid Quantum-Classical platform for adaptive traffic signal optimization using QUBO & QAOA.",
+      "badge": "QUBO / QAOA"
+    },
+    "Guess-the-Number-Game": {
+      "display_name": "Guess-the-Number",
+      "summary": "Early Python CLI guessing game project from my programming fundamentals journey.",
+      "badge": "Python"
+    }
+  },
+  "extra_highlights": [
+    {
+      "name": "Cybroatrix",
+      "url": "https://cybroatrix.com",
+      "tag": "Cybersecurity & Tech",
+      "summary": "My technology and cybersecurity project focused on networking, web security, and technical education."
+    },
+    {
+      "name": "BingeHub",
+      "url": "",
+      "tag": "React \u00b7 HLS \u00b7 IPTV",
+      "summary": "A streaming and media interface experiment exploring search, M3U playlists, and browser-based HLS playback."
+    },
+    {
+      "name": "Local AI Experiments",
+      "url": "",
+      "tag": "PyTorch \u00b7 LLMs",
+      "summary": "Character-level models, memory-based chatbots, and training experiments running language systems locally."
+    }
+  ],
+  "skills": [
+    "Python",
+    "C",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Vite",
+    "Node.js",
+    "Kotlin",
+    "Tailwind CSS",
+    "Firebase",
+    "SQLite",
+    "Cybersecurity",
+    "CTFs / OSINT",
+    "Local LLMs"
+  ],
+  "beyond_code": [
+    "Chess",
+    "Minecraft",
+    "Editing & Design",
+    "Creative Projects"
+  ],
+  "include_3d_contrib": true,
+  "include_snake": true
+}

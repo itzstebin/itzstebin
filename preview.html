@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>@itzstebin · GitHub Profile README Theme Preview</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 28px 18px 64px;
+      background: #0d1117; color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+    .wrap { max-width: 940px; margin: 0 auto; }
+    .bar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding: 14px 18px;
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      cursor: pointer; border: 1px solid #30363d; background: #21262d; color: #c9d1d9;
+      padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;
+    }
+    button.active { background: #1f6feb; border-color: #388bfd; color: #fff; }
+    .gh-card {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 26px;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    img.full { width: 100%; height: auto; display: block; margin: 12px 0; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 12px 0; }
+    .grid2 img { width: 100%; height: auto; display: block; }
+    .caption { text-align: center; color: #8b949e; font-size: 12.5px; margin: 4px 0 14px; }
+    .links { text-align: center; font-size: 13px; margin: 10px 0 16px; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h3 { text-align: center; margin: 20px 0 8px; font-size: 16px; color: #f0f6fc; }
+    hr { border: 0; border-top: 1px solid #21262d; margin: 22px 0; }
+    ul { line-height: 1.7; color: #c9d1d9; }
+    code { background: #161b22; padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <strong>@itzstebin</strong> · GitHub Profile README Preview
+      </div>
+      <div class="tabs">
+        <button class="active" data-tab="aquarium" onclick="showTab('aquarium', this)">Aquarium</button>
+        <button data-tab="title-sequence" onclick="showTab('title-sequence', this)">Title Sequence</button>
+        <button data-tab="repo-galaxy" onclick="showTab('repo-galaxy', this)">Repo Galaxy</button>
+      </div>
+    </div>
+    <div class="gh-card">
+      <div id="tab-aquarium" class="panel active">
+              <img class="full" src="./assets/aquarium/tank.svg" alt="Tank">
+              <p class="caption">Every fish is a repository sized by stars; swaying seaweed tracks 26 weeks of commits.</p>
+              <img class="full" src="./assets/aquarium/about.svg" alt="About">
+              <h3>Featured Specimens</h3>
+              <div class="grid2">
+                <a href="https://github.com/itzstebin/Whoisit" target="_blank"><img src="./assets/aquarium/card-0.svg" alt="Whoisit"></a><a href="https://github.com/itzstebin/priyo-smp-tracker" target="_blank"><img src="./assets/aquarium/card-1.svg" alt="priyo-smp-tracker"></a><a href="https://github.com/itzstebin/Mail-Hunter" target="_blank"><img src="./assets/aquarium/card-2.svg" alt="Mail-Hunter"></a><a href="https://github.com/itzstebin/Shanks" target="_blank"><img src="./assets/aquarium/card-3.svg" alt="Shanks (CybroatriX)"></a>
+              </div>
+              <img class="full" src="./assets/aquarium/stack.svg" alt="Stack">
+              <img class="full" src="./assets/aquarium/log.svg" alt="Log">
+            </div>
+      <div id="tab-title-sequence" class="panel">
+              <img class="full" src="./assets/title-sequence/hero.svg" alt="Hero">
+              <img class="full" src="./assets/title-sequence/about.svg" alt="About">
+              <img class="full" src="./assets/title-sequence/cast.svg" alt="Cast">
+              <p class="links"><a href="https://github.com/itzstebin/Whoisit" target="_blank">Whoisit</a> · <a href="https://github.com/itzstebin/priyo-smp-tracker" target="_blank">priyo-smp-tracker</a> · <a href="https://github.com/itzstebin/Mail-Hunter" target="_blank">Mail-Hunter</a> · <a href="https://github.com/itzstebin/Shanks" target="_blank">Shanks (CybroatriX)</a> · <a href="https://github.com/itzstebin/Quantum-Enhanced-Adaptive-Urban-Traffic-Optimization" target="_blank">Quantum Traffic</a> · <a href="https://github.com/itzstebin/Guess-the-Number-Game" target="_blank">Guess-the-Number</a></p>
+              <img class="full" src="./assets/title-sequence/stack.svg" alt="Stack">
+              <img class="full" src="./assets/title-sequence/log.svg" alt="Log">
+            </div>
+      <div id="tab-repo-galaxy" class="panel">
+              <img class="full" src="./assets/repo-galaxy/galaxy.svg" alt="Galaxy">
+              <img class="full" src="./assets/repo-galaxy/about.svg" alt="About">
+              <h3>Brightest Stars</h3>
+              <div class="grid2">
+                <a href="https://github.com/itzstebin/Whoisit" target="_blank"><img src="./assets/repo-galaxy/card-0.svg" alt="Whoisit"></a><a href="https://github.com/itzstebin/priyo-smp-tracker" target="_blank"><img src="./assets/repo-galaxy/card-1.svg" alt="priyo-smp-tracker"></a><a href="https://github.com/itzstebin/Mail-Hunter" target="_blank"><img src="./assets/repo-galaxy/card-2.svg" alt="Mail-Hunter"></a><a href="https://github.com/itzstebin/Shanks" target="_blank"><img src="./assets/repo-galaxy/card-3.svg" alt="Shanks (CybroatriX)"></a>
+              </div>
+              <img class="full" src="./assets/repo-galaxy/stack.svg" alt="Stack">
+              <img class="full" src="./assets/repo-galaxy/log.svg" alt="Log">
+            </div>
+      <hr/>
+      <h3>What I'm Building &amp; Exploring</h3>
+      <ul><li><strong>Cybroatrix</strong> <code>Cybersecurity &amp; Tech</code> — My technology and cybersecurity project focused on networking, web security, and technical education.</li><li><strong>BingeHub</strong> <code>React · HLS · IPTV</code> — A streaming and media interface experiment exploring search, M3U playlists, and browser-based HLS playback.</li><li><strong>Local AI Experiments</strong> <code>PyTorch · LLMs</code> — Character-level models, memory-based chatbots, and training experiments running language systems locally.</li></ul>
+      <p style="color:#8b949e;font-size:13px;"><strong>Beyond Code:</strong> Chess · Minecraft · Editing &amp; Design · Creative Projects</p>
+    </div>
+  </div>
+  <script>
+    function showTab(name, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('button[data-tab]').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
