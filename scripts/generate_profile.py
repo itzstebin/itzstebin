@@ -1468,7 +1468,10 @@ ASCII_FONT: dict[str, list[str]] = {
 }
 
 
-def ascii_word_lines(word: str, target_height: int = 12) -> list[str]:
+def ascii_word_lines(word: str, target_height: int = 15, max_cols: int = 76) -> list[str]:
+    core_syms = "@#%&*$"
+    mid_syms = "+=~^?"
+    edge_syms = ":.-;"
     try:
         from PIL import Image, ImageDraw, ImageFont
 
@@ -1484,14 +1487,14 @@ def ascii_word_lines(word: str, target_height: int = 12) -> list[str]:
             if found:
                 font_path = str(found[0])
         if font_path:
-            font = ImageFont.truetype(font_path, 48)
-            dummy = Image.new("L", (900, 140), 0)
+            font = ImageFont.truetype(font_path, 52)
+            dummy = Image.new("L", (1200, 160), 0)
             bbox = ImageDraw.Draw(dummy).textbbox((10, 10), word, font=font)
             tw = max(1, bbox[2] - bbox[0])
             th = max(1, bbox[3] - bbox[1])
             img = Image.new("L", (tw + 8, th + 8), 0)
             ImageDraw.Draw(img).text((4 - bbox[0], 4 - bbox[1]), word, fill=255, font=font)
-            target_w = max(6, int(round((tw / th) * target_height * 1.65)))
+            target_w = min(max_cols, max(8, int(round((tw / th) * target_height * 1.48))))
             resized = img.resize((target_w, target_height), Image.Resampling.BILINEAR)
             px = resized.load()
             out_rows: list[str] = []
@@ -1499,12 +1502,13 @@ def ascii_word_lines(word: str, target_height: int = 12) -> list[str]:
                 line = []
                 for x in range(target_w):
                     v = px[x, y]
-                    if v > 175:
-                        line.append("#" if (x + y) % 2 == 0 else "+")
+                    seed = x * 7 + y * 13
+                    if v > 170:
+                        line.append(core_syms[seed % len(core_syms)])
                     elif v > 95:
-                        line.append("+")
-                    elif v > 45:
-                        line.append(":")
+                        line.append(mid_syms[seed % len(mid_syms)])
+                    elif v > 48:
+                        line.append(edge_syms[seed % len(edge_syms)])
                     else:
                         line.append(" ")
                 stripped = "".join(line).rstrip()
@@ -1522,7 +1526,10 @@ def ascii_word_lines(word: str, target_height: int = 12) -> list[str]:
     for idx, ch in enumerate(clean):
         glyph = ASCII_FONT[ch]
         for r in range(7):
-            styled = "".join("#" if (c == "#" and (r + i) % 2 == 0) else ("+" if c == "#" else " ") for i, c in enumerate(glyph[r]))
+            styled = "".join(
+                core_syms[(r * 5 + i * 3 + idx) % len(core_syms)] if c == "#" else " "
+                for i, c in enumerate(glyph[r])
+            )
             rows[r] += styled + ("  " if idx < len(clean) - 1 else "")
     return rows
 
@@ -1669,24 +1676,39 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         f'<text x="36" y="78" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#7dd3fc">_</tspan></text>',
     ]
 
-    # Dense mixed-case ASCII wordmark (e.g. "Stebin" / "S")
-    name_words = m["display_name"].strip().split() or [m["username"]]
-    if len(name_words) > 2:
-        name_words = [" ".join(name_words[:-1]), name_words[-1]]
-    y_cursor = 108
-    for wi, word in enumerate(name_words[:2]):
-        rows = ascii_word_lines(word, target_height=13)
-        max_len = max((len(r) for r in rows), default=1)
-        font_sz = 9.2 if max_len <= 56 else 7.6
-        line_step = 8.8 if max_len <= 56 else 7.6
-        for ri, row_txt in enumerate(rows):
-            delay = f"-{(wi * 0.6 + ri * 0.14):.2f}s"
-            parts.append(
-                f'<text class="word-row" x="36" y="{y_cursor:.1f}" fill="#f8fafc" xml:space="preserve" '
-                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.2" style="animation-delay:{delay};">{esc(row_txt)}</text>'
-            )
-            y_cursor += line_step
-        y_cursor += 12
+    # Single-line multi-symbol ASCII wordmark ("Stebin S")
+    full_name = m["display_name"].strip() or m["username"]
+    rows = ascii_word_lines(full_name, target_height=15, max_cols=76)
+    max_len = max((len(r) for r in rows), default=1)
+    # Fit cleanly within x=36..495 (459px width) regardless of OS font metrics
+    font_sz = min(10.2, max(6.4, (455.0 / max_len - 0.2) / 0.605))
+    line_step = font_sz * 1.12
+    total_h = len(rows) * line_step
+    y_cursor = 178 - total_h / 2.0 + line_step * 0.7
+    for ri, row_txt in enumerate(rows):
+        delay = f"-{ri * 0.14:.2f}s"
+        # Tint edge/secondary symbols in cool ice-blue while keeping core strokes bright white
+        tspans = []
+        cur_txt = ""
+        cur_col = ""
+        for ch in row_txt:
+            col = "#f8fafc" if ch in "@#%&*$" else ("#7dd3fc" if ch in "+=~^?" else "#3b82f6")
+            if ch == " ":
+                col = cur_col or "#f8fafc"
+            if col == cur_col:
+                cur_txt += ch
+            else:
+                if cur_txt:
+                    tspans.append(f'<tspan fill="{cur_col}">{esc(cur_txt)}</tspan>')
+                cur_txt = ch
+                cur_col = col
+        if cur_txt:
+            tspans.append(f'<tspan fill="{cur_col}">{esc(cur_txt)}</tspan>')
+        parts.append(
+            f'<text class="word-row" x="36" y="{y_cursor:.1f}" xml:space="preserve" '
+            f'font-family="{FONT_MONO}" font-size="{font_sz:.2f}" font-weight="700" letter-spacing="0.2" style="animation-delay:{delay};">{"".join(tspans)}</text>'
+        )
+        y_cursor += line_step
 
     lang_line = " / ".join(l["name"] for l in m["languages"][:4]) or "Full-Stack"
     parts.append(

@@ -5,7 +5,7 @@
         <stop offset="50%" stop-color="#ffffff" stop-opacity="0.75"/>
         <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
       </linearGradient>
-    <clipPath id="barClip0"><rect x="155" y="58" width="149" height="9" rx="4.5"/></clipPath><clipPath id="barClip1"><rect x="155" y="84" width="28" height="9" rx="4.5"/></clipPath><clipPath id="barClip2"><rect x="155" y="110" width="22" height="9" rx="4.5"/></clipPath><clipPath id="barClip3"><rect x="155" y="136" width="17" height="9" rx="4.5"/></clipPath><clipPath id="barClip4"><rect x="155" y="162" width="6" height="9" rx="4.5"/></clipPath><clipPath id="barClip5"><rect x="155" y="188" width="6" height="9" rx="4.5"/></clipPath></defs>
+    <clipPath id="barClip0"><rect x="155" y="58" width="148" height="9" rx="4.5"/></clipPath><clipPath id="barClip1"><rect x="155" y="84" width="28" height="9" rx="4.5"/></clipPath><clipPath id="barClip2"><rect x="155" y="110" width="22" height="9" rx="4.5"/></clipPath><clipPath id="barClip3"><rect x="155" y="136" width="19" height="9" rx="4.5"/></clipPath><clipPath id="barClip4"><rect x="155" y="162" width="6" height="9" rx="4.5"/></clipPath><clipPath id="barClip5"><rect x="155" y="188" width="6" height="9" rx="4.5"/></clipPath></defs>
 <style>
       @keyframes dotPulse {
         0%, 100% { opacity: 0.6; }
@@ -51,9 +51,9 @@
 <circle class="dot-p" cx="34" cy="64" r="4.5" fill="#e34c26" style="animation-delay:-0.00s;"/>
 <text x="48" y="68" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">HTML</text>
 <rect x="155" y="58" width="225" height="9" rx="4.5" fill="#0e1a33"/>
-<rect x="155" y="58" width="149" height="9" rx="4.5" fill="#e34c26"/>
+<rect x="155" y="58" width="148" height="9" rx="4.5" fill="#e34c26"/>
 <g clip-path="url(#barClip0)"><rect class="glint" x="155" y="58" width="36" height="9" fill="url(#glintGrad)" style="animation-delay:-0.00s;"/></g>
-<text x="442" y="68" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">66.5%</text>
+<text x="442" y="68" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">66.1%</text>
 <circle class="dot-p" cx="34" cy="90" r="4.5" fill="#3178c6" style="animation-delay:-0.45s;"/>
 <text x="48" y="94" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">TypeScript</text>
 <rect x="155" y="84" width="225" height="9" rx="4.5" fill="#0e1a33"/>
@@ -65,13 +65,13 @@
 <rect x="155" y="110" width="225" height="9" rx="4.5" fill="#0e1a33"/>
 <rect x="155" y="110" width="22" height="9" rx="4.5" fill="#f7df1e"/>
 <g clip-path="url(#barClip2)"><rect class="glint" x="155" y="110" width="36" height="9" fill="url(#glintGrad)" style="animation-delay:-0.90s;"/></g>
-<text x="442" y="120" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">9.9%</text>
+<text x="442" y="120" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">9.8%</text>
 <circle class="dot-p" cx="34" cy="142" r="4.5" fill="#3776ab" style="animation-delay:-1.35s;"/>
 <text x="48" y="146" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">Python</text>
 <rect x="155" y="136" width="225" height="9" rx="4.5" fill="#0e1a33"/>
-<rect x="155" y="136" width="17" height="9" rx="4.5" fill="#3776ab"/>
+<rect x="155" y="136" width="19" height="9" rx="4.5" fill="#3776ab"/>
 <g clip-path="url(#barClip3)"><rect class="glint" x="155" y="136" width="36" height="9" fill="url(#glintGrad)" style="animation-delay:-1.35s;"/></g>
-<text x="442" y="146" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">7.9%</text>
+<text x="442" y="146" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">8.5%</text>
 <circle class="dot-p" cx="34" cy="168" r="4.5" fill="#563d7c" style="animation-delay:-1.80s;"/>
 <text x="48" y="172" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">CSS</text>
 <rect x="155" y="162" width="225" height="9" rx="4.5" fill="#0e1a33"/>
