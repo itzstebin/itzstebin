@@ -1,228 +1,55 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6D28D9,100:06B6D4&height=230&section=header&text=Stebin%20S%20👋&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=CSE%20Student%20%7C%20Developer%20%7C%20Cybersecurity%20Learner&descAlignY=58&descSize=18" width="100%"/>
+<picture><img src="../../assets/aquarium/tank.svg" width="100%" alt="Stebin S repository aquarium"></picture>
 
-<img src="https://readme-typing-svg.demolab.com/?lines=Building+things+with+code;Learning+Cybersecurity;Exploring+AI+%26+Local+Models;Web+Development+%7C+Python+%7C+C;Turning+ideas+into+projects+🚀&font=Fira+Code&center=true&width=650&height=55&color=06B6D4&vCenter=true&size=21&pause=1200"/>
+<sub>Every fish is a repository sized by stars; swaying seaweed tracks 26 weeks of commits.</sub>
 
-<br/>
+<picture><img src="../../assets/aquarium/about.svg" width="100%" alt="About Stebin S"></picture>
 
-<a href="https://github.com/itzstebin">
-<img src="https://komarev.com/ghpvc/?username=itzstebin&label=PROFILE%20VIEWS&color=6D28D9&style=for-the-badge"/>
-</a>
-&nbsp;
-<a href="https://github.com/itzstebin?tab=followers">
-<img src="https://img.shields.io/github/followers/itzstebin?label=FOLLOWERS&style=for-the-badge&color=06B6D4"/>
-</a>
-&nbsp;
-<a href="https://github.com/itzstebin?tab=repositories">
-<img src="https://img.shields.io/badge/PROJECTS-111111?style=for-the-badge&logo=github&logoColor=white"/>
-</a>
+## 🐠 Featured Specimens
 
-<br/><br/>
+<p>
+  <a href="https://github.com/itzstebin/Whoisit"><picture><img src="../../assets/aquarium/card-0.svg" width="49%" alt="Whoisit"></picture></a>
+  <a href="https://github.com/itzstebin/priyo-smp-tracker"><picture><img src="../../assets/aquarium/card-1.svg" width="49%" alt="priyo-smp-tracker"></picture></a>
+  <a href="https://github.com/itzstebin/Mail-Hunter"><picture><img src="../../assets/aquarium/card-2.svg" width="49%" alt="Mail-Hunter"></picture></a>
+  <a href="https://github.com/itzstebin/Shanks"><picture><img src="../../assets/aquarium/card-3.svg" width="49%" alt="Shanks (CybroatriX)"></picture></a>
+</p>
 
-<a href="https://cybroatrix.com">
-<img src="https://img.shields.io/badge/🛡️_Cybroatrix-Cybersecurity_%26_Technology-6D28D9?style=for-the-badge"/>
-</a>
+<picture><img src="../../assets/aquarium/stack.svg" width="100%" alt="Language stack and focus areas"></picture>
+
+<picture><img src="../../assets/aquarium/log.svg" width="100%" alt="26-week contribution log"></picture>
 
 </div>
 
 ---
 
-## 👨‍💻 About Me
+### 🚀 What I'm Building & Exploring
 
-I'm **Stebin**, a **CSE / Computer Science student** interested in software development, cybersecurity, networking and emerging technology.
+- **[Cybroatrix](https://cybroatrix.com)** `Cybersecurity & Tech` — My technology and cybersecurity project focused on networking, web security, and technical education.
+- **BingeHub** `React · HLS · IPTV` — A streaming and media interface experiment exploring search, M3U playlists, and browser-based HLS playback.
+- **Local AI Experiments** `PyTorch · LLMs` — Character-level models, memory-based chatbots, and training experiments running language systems locally.
 
-I learn mainly by **building projects and experimenting with things I don't fully understand yet**.
+**Beyond Code:** Chess · Minecraft · Editing & Design · Creative Projects
 
-Currently exploring:
-
-* 💻 Web development & modern frontend
-* 🐍 Python & programming fundamentals
-* ⚙️ C programming
-* 🟨 JavaScript & TypeScript
-* 🛡️ Cybersecurity & networking
-* 🧩 CTFs, OSINT & digital forensics
-* 🤖 AI / ML & local language models
-* 📺 IPTV, streaming & media applications
-
-```text
-Learn → Build → Break → Debug → Understand → Improve
-```
-
----
-
-## 🚀 Current Projects
-
-### 🛡️ Cybroatrix
-
-My technology and cybersecurity-focused project.
-
-I'm using it to explore **cybersecurity, networking, web development and technical education**, while creating projects and content around those areas.
-
-**Focus:** `Cybersecurity` `Networking` `Web` `Education`
-
-🌐 **https://cybroatrix.com**
-
----
-
-### 🎬 BingeHub
-
-A streaming / movie platform experiment.
-
-I've worked with:
-
-`React` `TypeScript` `Vite` `M3U/IPTV` `HLS` `APIs`
-
-The project explores movie interfaces, search, streaming playlists and browser-based media playback.
-
----
-
-### 🤖 AI & Local Model Experiments
-
-I've experimented with building and running AI systems locally, including:
-
-* Python chatbot projects
-* Local language models
-* PyTorch
-* Character-level models
-* Model training
-* Memory-based chatbot concepts
-
-I'm interested in understanding **how AI systems work**, not only using them.
-
----
-
-## 🧰 Technologies
+<details>
+<summary><b>✨ 3D Contribution Skyline &amp; Contribution Snake (Auto-Updated)</b></summary>
 
 <div align="center">
 
-<img src="https://skillicons.dev/icons?i=c,python,javascript,typescript,html,css,react,vite,tailwind,nodejs,git,github,firebase,vscode" />
-
-</div>
-
-### 🔍 Areas I'm Exploring
-
-`Cybersecurity` · `Networking` · `Web Security` · `CTFs` · `OSINT` · `Digital Forensics` · `Steganography` · `Reverse Engineering` · `AI/ML`
-
----
-
-## 📂 Other Projects
-
-| Project                 | Description                                                   |
-| ----------------------- | ------------------------------------------------------------- |
-| 🎮 **Guess the Number** | One of my early Python programming projects                   |
-| 🌐 **Web Projects**     | Websites and experiments built while learning web development |
-| 📺 **IPTV Experiments** | M3U playlists, HLS playback and streaming interfaces          |
-| 🤖 **AI Experiments**   | Local models, chatbot and model-training experiments          |
-
----
-
-## 📚 Currently Learning
-
-```text
-C Programming
-     ↓
-Programming Fundamentals
-     ↓
-Web Development
-     ↓
-Networking
-     ↓
-Cybersecurity
-     ↓
-AI / Machine Learning
-```
-
-My goal is to build **strong fundamentals first**, then use them to create bigger systems.
-
----
-
-## 📊 GitHub
-
-<div align="center">
-
-<img src="https://github-readme-stats.vercel.app/api?username=itzstebin&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" height="165"/>
-
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=itzstebin&theme=tokyonight&hide_border=true" height="165"/>
-
-<br/><br/>
-
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=itzstebin&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" height="165"/>
-
-</div>
-
----
-
-## 📈 Contribution Activity
-
-<div align="center">
-
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=itzstebin&theme=tokyo-night&hide_border=true&area=true" width="95%"/>
-
-</div>
-
----
-
-## 🧊 3D Contributions
-
-<div align="center">
-
-<img src="./profile-3d-contrib/profile-night-view.svg" width="100%" alt="3D Contribution Graph"/>
-
-</div>
-
----
-
-## 🐍 Contribution Snake
-
-<div align="center">
+<img src="../../profile-3d-contrib/profile-night-view.svg" width="100%" alt="3D Contribution Graph"/>
 
 <img src="https://raw.githubusercontent.com/itzstebin/itzstebin/output/github-contribution-grid-snake-dark.svg" width="95%" alt="Contribution Snake"/>
 
 </div>
 
----
-
-## 🏆 GitHub Trophies
-
-<div align="center">
-
-<img src="https://github-profile-trophy.vercel.app/?username=itzstebin&theme=darkhub&no-frame=true&row=1&column=6" width="95%"/>
-
-</div>
+</details>
 
 ---
 
-## ♟️ Beyond Code
-
-When I'm away from the keyboard:
-
-**♟️ Chess** · **🎮 Minecraft** · **🎨 Editing & Design** · **🎬 Creative Projects** · **🧠 Technology**
-
----
-
-## 📫 Connect
-
 <div align="center">
 
-<a href="https://github.com/itzstebin">
-<img src="https://img.shields.io/badge/GitHub-itzstebin-181717?style=for-the-badge&logo=github&logoColor=white"/>
-</a>
+<p><a href="https://github.com/itzstebin">GitHub (@itzstebin)</a> · <a href="https://cybroatrix.com">Cybroatrix</a></p>
 
-<a href="https://cybroatrix.com">
-<img src="https://img.shields.io/badge/Cybroatrix-Website-6D28D9?style=for-the-badge&logo=googlechrome&logoColor=white"/>
-</a>
+<sub>Aquarium · fish are repos, seaweed is contributions · auto-updated via GitHub Actions on 2026-11-25</sub>
 
 </div>
-
-<br/>
-
-<div align="center">
-
-### 💻 Build it. Break it. Understand it.
-
-**Still learning. Still building. 🚀**
-
-</div>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:06B6D4,100:6D28D9&height=110&section=footer" width="100%"/>
