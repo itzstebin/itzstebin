@@ -1468,7 +1468,53 @@ ASCII_FONT: dict[str, list[str]] = {
 }
 
 
-def ascii_word_lines(word: str) -> list[str]:
+def ascii_word_lines(word: str, target_height: int = 12) -> list[str]:
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+
+        font_candidates = [
+            r"C:\Windows\Fonts\segoeuib.ttf",
+            r"C:\Windows\Fonts\arialbd.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        ]
+        font_path = next((p for p in font_candidates if Path(p).exists()), None)
+        if not font_path and Path("/usr/share/fonts").exists():
+            found = sorted(Path("/usr/share/fonts").rglob("*Bold*.ttf"))
+            if found:
+                font_path = str(found[0])
+        if font_path:
+            font = ImageFont.truetype(font_path, 48)
+            dummy = Image.new("L", (900, 140), 0)
+            bbox = ImageDraw.Draw(dummy).textbbox((10, 10), word, font=font)
+            tw = max(1, bbox[2] - bbox[0])
+            th = max(1, bbox[3] - bbox[1])
+            img = Image.new("L", (tw + 8, th + 8), 0)
+            ImageDraw.Draw(img).text((4 - bbox[0], 4 - bbox[1]), word, fill=255, font=font)
+            target_w = max(6, int(round((tw / th) * target_height * 1.65)))
+            resized = img.resize((target_w, target_height), Image.Resampling.BILINEAR)
+            px = resized.load()
+            out_rows: list[str] = []
+            for y in range(target_height):
+                line = []
+                for x in range(target_w):
+                    v = px[x, y]
+                    if v > 175:
+                        line.append("#" if (x + y) % 2 == 0 else "+")
+                    elif v > 95:
+                        line.append("+")
+                    elif v > 45:
+                        line.append(":")
+                    else:
+                        line.append(" ")
+                stripped = "".join(line).rstrip()
+                if stripped:
+                    out_rows.append(stripped)
+            if out_rows:
+                return out_rows
+    except Exception:
+        pass
+
     clean = [c for c in word.upper() if c in ASCII_FONT]
     if not clean:
         clean = list("USER")
@@ -1476,7 +1522,6 @@ def ascii_word_lines(word: str) -> list[str]:
     for idx, ch in enumerate(clean):
         glyph = ASCII_FONT[ch]
         for r in range(7):
-            # Stylize block strokes with crisp matrix texture (# and +)
             styled = "".join("#" if (c == "#" and (r + i) % 2 == 0) else ("+" if c == "#" else " ") for i, c in enumerate(glyph[r]))
             rows[r] += styled + ("  " if idx < len(clean) - 1 else "")
     return rows
@@ -1492,33 +1537,32 @@ def fetch_or_load_portrait(avatar_url: str, offline: bool = False) -> list[list[
                 urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=15
             ).read()
             im = Image.open(io.BytesIO(raw)).convert("RGB")
-            im = ImageEnhance.Contrast(im).enhance(1.22)
-            im = ImageEnhance.Brightness(im).enhance(1.06)
-            cols, rows = 50, 32
+            im = ImageEnhance.Color(im).enhance(1.32)
+            im = ImageEnhance.Contrast(im).enhance(1.18)
+            im = ImageEnhance.Brightness(im).enhance(1.12)
+            cols, rows = 68, 38
             im = im.resize((cols, rows), Image.Resampling.LANCZOS)
             px = im.load()
-            chars = " .:-=+*#%@"
-            cx, cy = (cols - 1) / 2.0, (rows - 1) / 2.0
+            chars = ".:+*#%@"
             grid: list[list[list[str]]] = []
             for y in range(rows):
                 row_cells: list[list[str]] = []
                 for x in range(cols):
-                    nx = (x - cx) / (cols / 2.0)
-                    ny = (y - cy) / (rows / 2.0)
-                    dist = math.hypot(nx, ny)
-                    if dist > 1.03:
+                    nx = x / (cols - 1)
+                    ny = y / (rows - 1)
+                    # Chamfered square portrait (top-left & bottom-right diagonal corners)
+                    if (nx + ny < 0.24) or ((1.0 - nx) + (1.0 - ny) < 0.24):
                         row_cells.append([" ", ""])
                         continue
                     r, g, b = px[x, y]
                     lum = 0.299 * r + 0.587 * g + 0.114 * b
-                    fade = 1.0 if dist < 0.84 else max(0.28, 1.0 - (dist - 0.84) / 0.22)
-                    ci = min(len(chars) - 1, max(1, int((lum * fade / 255.0) * (len(chars) - 1))))
-                    if lum * fade < 28:
-                        col = "#1e3a5f"
+                    ci = min(len(chars) - 1, max(1, int((lum / 255.0) * (len(chars) - 1))))
+                    if lum < 26:
+                        col = "#475569"
                     else:
-                        qr = min(255, int(round((r * fade) / 32) * 32))
-                        qg = min(255, int(round((g * fade) / 32) * 32))
-                        qb = min(255, int(round((b * fade) / 32) * 32))
+                        qr = min(255, int(round(r / 24) * 24))
+                        qg = min(255, int(round(g / 24) * 24))
+                        qb = min(255, int(round(b / 24) * 24))
                         col = f"#{qr:02x}{qg:02x}{qb:02x}"
                     row_cells.append([chars[ci], col])
                 grid.append(row_cells)
@@ -1545,6 +1589,16 @@ def blueprint_grid(w: int, h: int, step: int = 44) -> str:
 def render_wow_hero(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 434
+    pcx, pcy = 686, 178
+    pw_half, ph_half = 136, 118
+    cx1, cy1 = pcx - pw_half, pcy - ph_half
+    cx2, cy2 = pcx + pw_half, pcy + ph_half
+    ch_x, ch_y = int(pw_half * 2 * 0.24), int(ph_half * 2 * 0.24)
+    chamfer_pts = (
+        f"{cx1+ch_x},{cy1} {cx2},{cy1} {cx2},{cy2-ch_y} "
+        f"{cx2-ch_x},{cy2} {cx1},{cy2} {cx1},{cy1+ch_y}"
+    )
+
     style = """
       @keyframes orbitCW {
         from { transform: rotate(0deg); }
@@ -1555,49 +1609,49 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         to { transform: rotate(0deg); }
       }
       @keyframes scanSweep {
-        0%, 100% { transform: translateY(-118px); }
-        50% { transform: translateY(118px); }
+        0%, 100% { transform: translateY(-112px); }
+        50% { transform: translateY(112px); }
       }
       @keyframes radarPing {
         0% { transform: scale(1); opacity: 0.95; }
-        100% { transform: scale(3.2); opacity: 0; }
+        100% { transform: scale(3.0); opacity: 0; }
       }
       @keyframes cursorBlink {
         0%, 49% { opacity: 1; }
         50%, 100% { opacity: 0; }
       }
-      @keyframes wordWave {
-        0%, 100% { opacity: 1; transform: translateX(0px); }
-        48% { opacity: 0.18; transform: translateX(5px); }
+      @keyframes wordGlow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.68; }
       }
       @keyframes portraitBreathe {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.32; }
+        50% { opacity: 0.56; }
       }
-      .orbit-cw { transform-origin: 0px 0px; animation: orbitCW 8s linear infinite; }
-      .orbit-ccw { transform-origin: 0px 0px; animation: orbitCCW 13s linear infinite; }
-      .scanner { animation: scanSweep 3.2s ease-in-out infinite; }
-      .ping { transform-origin: 0px 0px; animation: radarPing 1.8s ease-out infinite; }
-      .cursor { animation: cursorBlink 0.9s step-end infinite; }
-      .word-row { animation: wordWave 4.6s ease-in-out infinite; }
-      .p-row { animation: portraitBreathe 3.2s ease-in-out infinite; }
+      .orbit-cw { transform-origin: 0px 0px; animation: orbitCW 11s linear infinite; }
+      .orbit-ccw { transform-origin: 0px 0px; animation: orbitCCW 17s linear infinite; }
+      .scanner { animation: scanSweep 3.4s ease-in-out infinite; }
+      .ping { transform-origin: 0px 0px; animation: radarPing 1.9s ease-out infinite; }
+      .cursor { animation: cursorBlink 0.95s step-end infinite; }
+      .word-row { animation: wordGlow 3.6s ease-in-out infinite; }
+      .p-row { animation: portraitBreathe 3.0s ease-in-out infinite; }
     """
-    defs = """
+    defs = f"""
       <radialGradient id="wowGlow" cx="76%" cy="42%" r="48%">
-        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.38"/>
+        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.34"/>
         <stop offset="60%" stop-color="#0f172a" stop-opacity="0.12"/>
         <stop offset="100%" stop-color="#060b16" stop-opacity="0"/>
       </radialGradient>
       <linearGradient id="scanBeamGrad" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
-        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.62"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.58"/>
         <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
       </linearGradient>
       <clipPath id="wowClip">
         <rect x="1" y="1" width="898" height="432" rx="18"/>
       </clipPath>
-      <clipPath id="scanCircle">
-        <circle cx="696" cy="178" r="128"/>
+      <clipPath id="scanChamfer">
+        <polygon points="{chamfer_pts}"/>
       </clipPath>
     """
     parts = [
@@ -1605,63 +1659,68 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         f'<rect width="{w}" height="{h}" fill="{t["bg"]}"/>',
         blueprint_grid(w, h, 44),
         f'<rect width="{w}" height="{h}" fill="url(#wowGlow)"/>',
-        # Top header bar + pulsing sonar ping
-        f'<text x="36" y="36" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11" letter-spacing="2.4">LIVING IDENTITY / @{esc(m["username"].upper())}</text>',
+        # Top bar
+        f'<text x="36" y="36" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11" letter-spacing="2.4">LIVING IDENTITY</text>',
         '<g transform="translate(748,32)">',
         '  <circle class="ping" cx="0" cy="0" r="4" fill="#34d399"/>',
         '  <circle cx="0" cy="0" r="4" fill="#34d399"/>',
         '</g>',
         f'<text x="864" y="36" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11">LIVE · @{esc(m["username"])}</text>',
-        f'<text class="word-row" x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#7dd3fc">_</tspan></text>',
+        f'<text x="36" y="78" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#7dd3fc">_</tspan></text>',
     ]
 
-    # ASCII wordmark (keep full display_name on 1 crisp row when <= 10 chars, else split)
-    full_name = m["display_name"].strip() or m["username"]
-    name_rows = [full_name] if len(full_name) <= 10 else (full_name.split()[:2] or [full_name])
-    y_cursor = 128 if len(name_rows) == 1 else 112
-    for word in name_rows:
-        font_sz = 13.0 if len(word) <= 8 else (11.0 if len(word) <= 10 else 8.8)
-        line_step = 15.0 if len(word) <= 8 else (12.5 if len(word) <= 10 else 9.8)
-        for ri, row_txt in enumerate(ascii_word_lines(word)):
-            delay = f"-{ri * 0.22:.2f}s"
+    # Dense mixed-case ASCII wordmark (e.g. "Stebin" / "S")
+    name_words = m["display_name"].strip().split() or [m["username"]]
+    if len(name_words) > 2:
+        name_words = [" ".join(name_words[:-1]), name_words[-1]]
+    y_cursor = 108
+    for wi, word in enumerate(name_words[:2]):
+        rows = ascii_word_lines(word, target_height=13)
+        max_len = max((len(r) for r in rows), default=1)
+        font_sz = 9.2 if max_len <= 56 else 7.6
+        line_step = 8.8 if max_len <= 56 else 7.6
+        for ri, row_txt in enumerate(rows):
+            delay = f"-{(wi * 0.6 + ri * 0.14):.2f}s"
             parts.append(
-                f'<text class="word-row" x="36" y="{y_cursor:.1f}" fill="#f1f5f9" xml:space="preserve" '
-                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.4" style="animation-delay:{delay};">{esc(row_txt)}</text>'
+                f'<text class="word-row" x="36" y="{y_cursor:.1f}" fill="#f8fafc" xml:space="preserve" '
+                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.2" style="animation-delay:{delay};">{esc(row_txt)}</text>'
             )
             y_cursor += line_step
         y_cursor += 12
 
     lang_line = " / ".join(l["name"] for l in m["languages"][:4]) or "Full-Stack"
     parts.append(
-        f'<text class="word-row" x="36" y="276" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="14.5" font-weight="600" style="animation-delay:-1.2s;">{esc(lang_line)}</text>'
+        f'<text x="36" y="280" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="14.5" font-weight="600">{esc(lang_line)}</text>'
     )
     parts.append(
-        f'<text class="word-row" x="36" y="302" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12" style="animation-delay:-1.5s;">{esc(truncate(m["headline"], 50))}</text>'
+        f'<text x="36" y="304" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12">{esc(truncate(m["headline"], 50))}</text>'
     )
 
-    # Right dual-rotating orbital reticle + satellite markers + ASCII portrait + laser scanner
-    pcx, pcy = 696, 178
+    # Right orbital arcs framing the chamfered portrait
     parts.append(f'<g transform="translate({pcx},{pcy})">')
     parts.append('  <g class="orbit-ccw">')
-    parts.append('    <circle cx="0" cy="0" r="134" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-dasharray="18 14 4 14" opacity="0.78"/>')
-    parts.append('    <circle cx="134" cy="0" r="3.2" fill="#7dd3fc"/>')
-    parts.append('    <circle cx="-134" cy="0" r="3.2" fill="#7dd3fc"/>')
+    parts.append('    <circle cx="0" cy="0" r="144" fill="none" stroke="#38bdf8" stroke-width="1.3" stroke-dasharray="22 14 4 14" opacity="0.58"/>')
+    parts.append('    <circle cx="144" cy="0" r="2.8" fill="#7dd3fc"/>')
+    parts.append('    <circle cx="-144" cy="0" r="2.8" fill="#7dd3fc"/>')
     parts.append('  </g>')
     parts.append('  <g class="orbit-cw">')
-    parts.append('    <circle cx="0" cy="0" r="147" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-dasharray="36 18 8 18" opacity="0.88"/>')
-    parts.append('    <circle cx="0" cy="-147" r="4" fill="#38bdf8"/>')
-    parts.append('    <circle cx="0" cy="147" r="4" fill="#38bdf8"/>')
+    parts.append('    <circle cx="0" cy="0" r="158" fill="none" stroke="#60a5fa" stroke-width="1.4" stroke-dasharray="40 20 8 20" opacity="0.68"/>')
+    parts.append('    <circle cx="0" cy="-158" r="3.4" fill="#38bdf8"/>')
+    parts.append('    <circle cx="0" cy="158" r="3.4" fill="#38bdf8"/>')
     parts.append('  </g>')
     parts.append('</g>')
+
+    # Subtle chamfered portrait backdrop border
+    parts.append(f'<polygon points="{chamfer_pts}" fill="#050914" fill-opacity="0.72" stroke="#1e3a5f" stroke-width="1"/>')
 
     grid = m.get("portrait_grid") or []
     if grid:
         rows_cnt = len(grid)
         cols_cnt = len(grid[0]) if rows_cnt else 0
-        char_w = 4.6
-        row_h = 7.4
+        char_w = 3.85
+        row_h = 6.1
         start_x = pcx - (cols_cnt * char_w) / 2.0
-        start_y = pcy - (rows_cnt * row_h) / 2.0 + 6
+        start_y = pcy - (rows_cnt * row_h) / 2.0 + 5
         for ri, row in enumerate(grid):
             runs: list[tuple[str, str]] = []
             for ch, col in row:
@@ -1675,17 +1734,17 @@ def render_wow_hero(m: dict[str, Any]) -> str:
                     tspans.append(esc(seg))
                 else:
                     tspans.append(f'<tspan fill="{col}">{esc(seg)}</tspan>')
-            delay = f"-{(ri % 10) * 0.30:.2f}s"
+            delay = f"-{(ri % 12) * 0.24:.2f}s"
             parts.append(
                 f'<text class="p-row" x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
-                f'font-family="{FONT_MONO}" font-size="7.4" font-weight="700" style="animation-delay:{delay};">{"".join(tspans)}</text>'
+                f'font-family="{FONT_MONO}" font-size="6.1" font-weight="700" style="animation-delay:{delay};">{"".join(tspans)}</text>'
             )
 
-    # Vivid vertical scanning beam across portrait
-    parts.append('<g clip-path="url(#scanCircle)">')
+    # Vivid scanning beam clipped to chamfered portrait silhouette
+    parts.append('<g clip-path="url(#scanChamfer)">')
     parts.append('  <g class="scanner">')
-    parts.append(f'    <rect x="{pcx-132}" y="{pcy-32}" width="264" height="64" fill="url(#scanBeamGrad)"/>')
-    parts.append(f'    <line x1="{pcx-132}" y1="{pcy}" x2="{pcx+132}" y2="{pcy}" stroke="#7dd3fc" stroke-width="2.2" opacity="0.96"/>')
+    parts.append(f'    <rect x="{cx1}" y="{pcy-30}" width="{pw_half*2}" height="60" fill="url(#scanBeamGrad)"/>')
+    parts.append(f'    <line x1="{cx1}" y1="{pcy}" x2="{cx2}" y2="{pcy}" stroke="#7dd3fc" stroke-width="2" opacity="0.96"/>')
     parts.append('  </g>')
     parts.append('</g>')
 
@@ -1707,7 +1766,7 @@ def render_wow_hero(m: dict[str, Any]) -> str:
             f'<text x="{sx}" y="402" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="28" font-weight="700">{esc(val)}</text>'
         )
         if idx < len(stats) - 1:
-            parts.append(f'<circle class="p-row" cx="{xs[idx+1] - 32}" cy="363" r="3.5" fill="{t["accent"]}" style="animation-delay:-{idx*0.6:.1f}s;"/>')
+            parts.append(f'<circle class="p-row" cx="{xs[idx+1] - 32}" cy="363" r="3.2" fill="#f97316" style="animation-delay:-{idx*0.5:.1f}s;"/>')
 
     parts.append('</g>')
     parts.append(f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="18" fill="none" stroke="{t["border"]}" stroke-width="1.5"/>')
