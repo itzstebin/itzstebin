@@ -6,7 +6,17 @@
   "headline": "CSE Student · Developer · Cybersecurity Learner",
   "subheadline": "Building things with code · Learning Cybersecurity · Exploring AI & Local Models",
   "bio": "CSE student learning by building, breaking, and shipping — across web apps, cybersecurity & CTFs, local AI experiments, and open-source tools.",
-  "mantra": "Learn -> Build -> Break -> Debug -> Understand -> Improve",
+  "mantra": "Learn → Build → Break → Debug → Understand → Improve",
+  "exploring": [
+    "Cybersecurity",
+    "Networking",
+    "CTFs",
+    "OSINT",
+    "Digital Forensics",
+    "Steganography",
+    "Reverse Engineering",
+    "AI / ML & Local LLMs"
+  ],
   "website": {
     "label": "Cybroatrix",
     "url": "https://cybroatrix.com"

@@ -558,6 +558,7 @@ def prepare_metrics(data: dict[str, Any], config: dict[str, Any]) -> dict[str, A
         "weeks_52": weeks_52,
         "weekly_totals": weekly_totals,
         "skills": config.get("skills", []),
+        "exploring": config.get("exploring", []),
         "beyond_code": config.get("beyond_code", []),
         "extra_highlights": config.get("extra_highlights", []),
         "updated_date": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d"),
@@ -1202,6 +1203,28 @@ def render_stack_svg(m: dict[str, Any], theme_key: str) -> str:
         "wow-profile": "THE TOOLS BEHIND THE SIGNAL",
     }.get(theme_key, "LANGUAGE STACK")
 
+    style = """
+      @keyframes dotPulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      @keyframes barGlint {
+        0% { transform: translateX(-40px); opacity: 0; }
+        25% { opacity: 0.65; }
+        75% { opacity: 0.65; }
+        100% { transform: translateX(240px); opacity: 0; }
+      }
+      .dot-p { animation: dotPulse 2.4s ease-in-out infinite; }
+      .glint { animation: barGlint 3.4s linear infinite; }
+    """
+    defs = """
+      <linearGradient id="glintGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#ffffff" stop-opacity="0.75"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+    """
+
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
         blueprint_grid(w, h, 44) if theme_key == "wow-profile" else "",
@@ -1214,7 +1237,10 @@ def render_stack_svg(m: dict[str, Any], theme_key: str) -> str:
         ly = 68 + i * 26
         bar_max = 225
         bw = max(6, int((lang["pct"] / 100.0) * bar_max))
-        parts.append(f'<circle cx="34" cy="{ly-4}" r="4.5" fill="{lang["color"]}"/>')
+        delay = f"-{i * 0.45:.2f}s"
+        clip_id = f"barClip{i}"
+        defs += f'<clipPath id="{clip_id}"><rect x="155" y="{ly-10}" width="{bw}" height="9" rx="4.5"/></clipPath>'
+        parts.append(f'<circle class="dot-p" cx="34" cy="{ly-4}" r="4.5" fill="{lang["color"]}" style="animation-delay:{delay};"/>')
         parts.append(
             f'<text x="48" y="{ly}" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="12.5" font-weight="600">{esc(lang["name"])}</text>'
         )
@@ -1223,6 +1249,11 @@ def render_stack_svg(m: dict[str, Any], theme_key: str) -> str:
         )
         parts.append(
             f'<rect x="155" y="{ly-10}" width="{bw}" height="9" rx="4.5" fill="{lang["color"]}"/>'
+        )
+        parts.append(
+            f'<g clip-path="url(#{clip_id})">'
+            f'<rect class="glint" x="155" y="{ly-10}" width="36" height="9" fill="url(#glintGrad)" style="animation-delay:{delay};"/>'
+            f'</g>'
         )
         parts.append(
             f'<text x="442" y="{ly}" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11.5">{lang["pct"]:.1f}%</text>'
@@ -1249,7 +1280,7 @@ def render_stack_svg(m: dict[str, Any], theme_key: str) -> str:
         )
         cx += pw + 8
 
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style, defs=defs)
 
 
 def render_log_svg(m: dict[str, Any], theme_key: str) -> str:
@@ -1465,25 +1496,53 @@ def render_wow_hero(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 434
     style = """
-      @keyframes spinSlow {
+      @keyframes orbitCW {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
       }
-      @keyframes pulseDot {
-        0%, 100% { opacity: 0.45; }
+      @keyframes orbitCCW {
+        from { transform: rotate(360deg); }
+        to { transform: rotate(0deg); }
+      }
+      @keyframes scanSweep {
+        0%, 100% { transform: translateY(-118px); }
+        50% { transform: translateY(118px); }
+      }
+      @keyframes radarPing {
+        0% { transform: scale(1); opacity: 0.85; }
+        100% { transform: scale(2.8); opacity: 0; }
+      }
+      @keyframes cursorBlink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      @keyframes rowShimmer {
+        0%, 100% { opacity: 0.86; }
         50% { opacity: 1; }
       }
-      .orbit-ring { transform-box: fill-box; transform-origin: center; animation: spinSlow 42s linear infinite; }
-      .live-dot { animation: pulseDot 2.4s ease-in-out infinite; }
+      .orbit-cw { transform-origin: 0px 0px; animation: orbitCW 14s linear infinite; }
+      .orbit-ccw { transform-origin: 0px 0px; animation: orbitCCW 22s linear infinite; }
+      .scanner { animation: scanSweep 4.2s ease-in-out infinite; }
+      .ping { transform-origin: 0px 0px; animation: radarPing 2.2s ease-out infinite; }
+      .cursor { animation: cursorBlink 1.1s step-end infinite; }
+      .row-sh { animation: rowShimmer 3.2s ease-in-out infinite; }
     """
     defs = """
       <radialGradient id="wowGlow" cx="76%" cy="42%" r="48%">
-        <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.28"/>
+        <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.30"/>
         <stop offset="60%" stop-color="#0f172a" stop-opacity="0.1"/>
         <stop offset="100%" stop-color="#060b16" stop-opacity="0"/>
       </radialGradient>
+      <linearGradient id="scanBeamGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </linearGradient>
       <clipPath id="wowClip">
         <rect x="1" y="1" width="898" height="432" rx="18"/>
+      </clipPath>
+      <clipPath id="scanCircle">
+        <circle cx="696" cy="178" r="128"/>
       </clipPath>
     """
     parts = [
@@ -1491,11 +1550,14 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         f'<rect width="{w}" height="{h}" fill="{t["bg"]}"/>',
         blueprint_grid(w, h, 44),
         f'<rect width="{w}" height="{h}" fill="url(#wowGlow)"/>',
-        # Top header bar
+        # Top header bar + pulsing sonar ping
         f'<text x="36" y="36" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11" letter-spacing="2.4">LIVING IDENTITY / @{esc(m["username"].upper())}</text>',
-        '<circle class="live-dot" cx="748" cy="32" r="4" fill="#34d399"/>',
+        '<g transform="translate(748,32)">',
+        '  <circle class="ping" cx="0" cy="0" r="4" fill="#34d399"/>',
+        '  <circle cx="0" cy="0" r="4" fill="#34d399"/>',
+        '</g>',
         f'<text x="864" y="36" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="11">LIVE · @{esc(m["username"])}</text>',
-        f'<text x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M</text>',
+        f'<text x="36" y="88" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11.5" font-weight="700" letter-spacing="2.8">HELLO, WORLD. I\'M <tspan class="cursor" fill="#38bdf8">_</tspan></text>',
     ]
 
     # ASCII wordmark (keep full display_name on 1 crisp row when <= 10 chars, else split)
@@ -1505,10 +1567,11 @@ def render_wow_hero(m: dict[str, Any]) -> str:
     for word in name_rows:
         font_sz = 13.0 if len(word) <= 8 else (11.0 if len(word) <= 10 else 8.8)
         line_step = 15.0 if len(word) <= 8 else (12.5 if len(word) <= 10 else 9.8)
-        for row_txt in ascii_word_lines(word):
+        for ri, row_txt in enumerate(ascii_word_lines(word)):
+            delay = f"-{ri * 0.25:.2f}s"
             parts.append(
-                f'<text x="36" y="{y_cursor:.1f}" fill="#e2e8f0" xml:space="preserve" '
-                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.4">{esc(row_txt)}</text>'
+                f'<text class="row-sh" x="36" y="{y_cursor:.1f}" fill="#e2e8f0" xml:space="preserve" '
+                f'font-family="{FONT_MONO}" font-size="{font_sz}" font-weight="700" letter-spacing="0.4" style="animation-delay:{delay};">{esc(row_txt)}</text>'
             )
             y_cursor += line_step
         y_cursor += 12
@@ -1521,13 +1584,13 @@ def render_wow_hero(m: dict[str, Any]) -> str:
         f'<text x="36" y="302" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="12">{esc(truncate(m["headline"], 50))}</text>'
     )
 
-    # Right orbital reticle + ASCII portrait
+    # Right dual-rotating orbital reticle + ASCII portrait + laser scanner
     pcx, pcy = 696, 178
-    parts.append(f'<circle cx="{pcx}" cy="{pcy}" r="134" fill="none" stroke="#1e3a5f" stroke-width="1" opacity="0.65"/>')
-    parts.append(
-        f'<circle class="orbit-ring" cx="{pcx}" cy="{pcy}" r="146" fill="none" stroke="#3b82f6" '
-        f'stroke-width="1.1" stroke-dasharray="18 12 4 12" opacity="0.45"/>'
-    )
+    parts.append(f'<g transform="translate({pcx},{pcy})">')
+    parts.append('  <circle class="orbit-ccw" cx="0" cy="0" r="134" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="10 14 2 14" opacity="0.55"/>')
+    parts.append('  <circle class="orbit-cw" cx="0" cy="0" r="147" fill="none" stroke="#3b82f6" stroke-width="1.4" stroke-dasharray="28 16 6 16" opacity="0.65"/>')
+    parts.append('</g>')
+
     grid = m.get("portrait_grid") or []
     if grid:
         rows_cnt = len(grid)
@@ -1549,10 +1612,19 @@ def render_wow_hero(m: dict[str, Any]) -> str:
                     tspans.append(esc(seg))
                 else:
                     tspans.append(f'<tspan fill="{col}">{esc(seg)}</tspan>')
+            delay = f"-{(ri % 8) * 0.35:.2f}s"
             parts.append(
-                f'<text x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
-                f'font-family="{FONT_MONO}" font-size="7.4" font-weight="700">{"".join(tspans)}</text>'
+                f'<text class="row-sh" x="{start_x:.1f}" y="{start_y + ri * row_h:.1f}" xml:space="preserve" '
+                f'font-family="{FONT_MONO}" font-size="7.4" font-weight="700" style="animation-delay:{delay};">{"".join(tspans)}</text>'
             )
+
+    # Vertical scanning beam across portrait
+    parts.append('<g clip-path="url(#scanCircle)">')
+    parts.append('  <g class="scanner">')
+    parts.append(f'    <rect x="{pcx-132}" y="{pcy-22}" width="264" height="44" fill="url(#scanBeamGrad)"/>')
+    parts.append(f'    <line x1="{pcx-132}" y1="{pcy}" x2="{pcx+132}" y2="{pcy}" stroke="#38bdf8" stroke-width="1.4" opacity="0.85"/>')
+    parts.append('  </g>')
+    parts.append('</g>')
 
     # Bottom divider & 4 live stats
     parts.append('<line x1="36" y1="338" x2="864" y2="338" stroke="#182a4d" stroke-width="1"/>')
@@ -1572,7 +1644,7 @@ def render_wow_hero(m: dict[str, Any]) -> str:
             f'<text x="{sx}" y="402" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="28" font-weight="700">{esc(val)}</text>'
         )
         if idx < len(stats) - 1:
-            parts.append(f'<circle cx="{xs[idx+1] - 32}" cy="363" r="3" fill="{t["accent"]}"/>')
+            parts.append(f'<circle class="row-sh" cx="{xs[idx+1] - 32}" cy="363" r="3" fill="{t["accent"]}" style="animation-delay:-{idx*0.6:.1f}s;"/>')
 
     parts.append('</g>')
     parts.append(f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="18" fill="none" stroke="{t["border"]}" stroke-width="1.5"/>')
@@ -1582,21 +1654,64 @@ def render_wow_hero(m: dict[str, Any]) -> str:
 def render_wow_highlights(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 192
+    style = """
+      @keyframes eqBounce {
+        0%, 100% { transform: scaleY(0.35); }
+        50% { transform: scaleY(1); }
+      }
+      @keyframes ledPulse {
+        0%, 100% { opacity: 0.45; }
+        50% { opacity: 1; }
+      }
+      @keyframes cardGlint {
+        0% { transform: translateX(-80px); opacity: 0; }
+        25% { opacity: 0.85; }
+        75% { opacity: 0.85; }
+        100% { transform: translateX(300px); opacity: 0; }
+      }
+      .eq { transform-origin: 0px 14px; animation: eqBounce 1.2s ease-in-out infinite; }
+      .led { animation: ledPulse 2s ease-in-out infinite; }
+      .c-glint { animation: cardGlint 4.2s linear infinite; }
+    """
+    defs = """
+      <linearGradient id="topBeam" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </linearGradient>
+    """
     items = m["extra_highlights"][:3]
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
         blueprint_grid(w, h, 44),
         f'<text x="28" y="34" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">SIGNAL PILLARS · WHAT MOVES THE WORK</text>',
+        # Animated telemetry EQ bars on top-right
+        '<g transform="translate(838,20)">',
     ]
+    for bi in range(5):
+        parts.append(
+            f'  <rect class="eq" x="{bi*7}" y="2" width="4" height="14" rx="2" fill="{t["accent"]}" style="animation-delay:-{bi*0.22:.2f}s;"/>'
+        )
+    parts.append('</g>')
+
     card_w = 268
     for idx, item in enumerate(items):
         cx = 28 + idx * (card_w + 20)
         cy = 50
+        delay = f"-{idx * 1.1:.1f}s"
+        clip_id = f"hlClip{idx}"
+        defs += f'<clipPath id="{clip_id}"><rect x="{cx}" y="{cy}" width="{card_w}" height="4" rx="2"/></clipPath>'
         parts.append(
             f'<rect x="{cx}" y="{cy}" width="{card_w}" height="122" rx="12" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1"/>'
         )
         parts.append(
-            f'<text x="{cx+16}" y="{cy+24}" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="10" font-weight="700">{idx+1:02d} · {esc(truncate(item.get("tag", "FOCUS"), 24))}</text>'
+            f'<g clip-path="url(#{clip_id})">'
+            f'<rect class="c-glint" x="{cx}" y="{cy}" width="75" height="3" fill="url(#topBeam)" style="animation-delay:{delay};"/>'
+            f'</g>'
+        )
+        parts.append(f'<circle class="led" cx="{cx+20}" cy="{cy+21}" r="3.5" fill="#34d399" style="animation-delay:{delay};"/>')
+        parts.append(
+            f'<text x="{cx+30}" y="{cy+24}" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="10" font-weight="700">{idx+1:02d} · {esc(truncate(item.get("tag", "FOCUS"), 22))}</text>'
         )
         parts.append(
             f'<text x="{cx+16}" y="{cy+48}" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="16" font-weight="800">{esc(truncate(item["name"], 22))}</text>'
@@ -1605,12 +1720,29 @@ def render_wow_highlights(m: dict[str, Any]) -> str:
             parts.append(
                 f'<text x="{cx+16}" y="{cy+72 + li*16}" fill="{t["muted"]}" font-family="{FONT_SANS}" font-size="11.5">{esc(line)}</text>'
             )
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style, defs=defs)
 
 
 def render_wow_constellation(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 260
+    style = """
+      @keyframes dashFlow {
+        from { stroke-dashoffset: 0; }
+        to { stroke-dashoffset: -24; }
+      }
+      @keyframes hubPing {
+        0% { transform: scale(1); opacity: 0.7; }
+        100% { transform: scale(1.85); opacity: 0; }
+      }
+      @keyframes nodePulse {
+        0%, 100% { opacity: 0.65; }
+        50% { opacity: 1; }
+      }
+      .trace { animation: dashFlow 1.4s linear infinite; }
+      .hub-ping { transform-origin: 0px 0px; animation: hubPing 2.6s ease-out infinite; }
+      .ndot { animation: nodePulse 2.4s ease-in-out infinite; }
+    """
     repos = m["repos"][:5]
     nodes = [
         (138, 72),
@@ -1629,10 +1761,13 @@ def render_wow_constellation(m: dict[str, Any]) -> str:
         nx, ny = nodes[idx]
         lcol = get_lang_color(repo.get("language"))
         parts.append(
-            f'<line x1="{hub_x}" y1="{hub_y}" x2="{nx}" y2="{ny}" stroke="{lcol}" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.5"/>'
+            f'<line class="trace" x1="{hub_x}" y1="{hub_y}" x2="{nx}" y2="{ny}" stroke="{lcol}" stroke-width="1.6" stroke-dasharray="6 6" opacity="0.72"/>'
         )
-    # Central hub
-    parts.append(f'<circle cx="{hub_x}" cy="{hub_y}" r="36" fill="{t["bg_alt"]}" stroke="{t["accent"]}" stroke-width="1.5"/>')
+    # Central hub + expanding sonar halo
+    parts.append(f'<g transform="translate({hub_x},{hub_y})">')
+    parts.append(f'  <circle class="hub-ping" cx="0" cy="0" r="36" fill="none" stroke="{t["accent"]}" stroke-width="1.5"/>')
+    parts.append(f'  <circle cx="0" cy="0" r="36" fill="{t["bg_alt"]}" stroke="{t["accent"]}" stroke-width="1.6"/>')
+    parts.append('</g>')
     parts.append(
         f'<text x="{hub_x}" y="{hub_y-2}" text-anchor="middle" fill="{t["text"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700">@{esc(m["username"])}</text>'
     )
@@ -1645,10 +1780,11 @@ def render_wow_constellation(m: dict[str, Any]) -> str:
         lcol = get_lang_color(repo.get("language"))
         cw, ch = 222, 54
         rx, ry = nx - cw / 2, ny - ch / 2
+        delay = f"-{idx * 0.45:.2f}s"
         parts.append(
             f'<rect x="{rx:.1f}" y="{ry:.1f}" width="{cw}" height="{ch}" rx="10" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1.2"/>'
         )
-        parts.append(f'<circle cx="{rx+16:.1f}" cy="{ry+20:.1f}" r="4.5" fill="{lcol}"/>')
+        parts.append(f'<circle class="ndot" cx="{rx+16:.1f}" cy="{ry+20:.1f}" r="4.5" fill="{lcol}" style="animation-delay:{delay};"/>')
         parts.append(
             f'<text x="{rx+28:.1f}" y="{ry+24:.1f}" fill="{t["text"]}" font-family="{FONT_SANS}" font-size="13.5" font-weight="700">{esc(truncate(repo["display_name"], 20))}</text>'
         )
@@ -1658,13 +1794,26 @@ def render_wow_constellation(m: dict[str, Any]) -> str:
         parts.append(
             f'<text x="{rx+16:.1f}" y="{ry+42:.1f}" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="10">{esc(repo.get("language") or "Code")} · {esc(truncate(repo.get("badge") or "Public", 18))}</text>'
         )
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style)
 
 
 def render_wow_timeline(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 174
-    # Sort chronologically by created_at or updated_at
+    style = """
+      @keyframes spineTravel {
+        0% { transform: translateX(0px); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateX(740px); opacity: 0; }
+      }
+      @keyframes latestPing {
+        0% { transform: scale(1); opacity: 0.85; }
+        100% { transform: scale(2.4); opacity: 0; }
+      }
+      .travel { animation: spineTravel 4.2s linear infinite; }
+      .l-ping { transform-origin: 0px 0px; animation: latestPing 2.2s ease-out infinite; }
+    """
     chron = sorted(
         m["repos"],
         key=lambda r: (r.get("created_at") or r.get("updated_at") or "9999"),
@@ -1674,6 +1823,10 @@ def render_wow_timeline(m: dict[str, Any]) -> str:
         blueprint_grid(w, h, 44),
         f'<text x="28" y="32" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">SHIPPING TIMELINE · CHRONOLOGICAL</text>',
         f'<line x1="70" y1="96" x2="830" y2="96" stroke="{t["border"]}" stroke-width="2"/>',
+        '<g class="travel">',
+        '  <rect x="70" y="94.5" width="28" height="3" rx="1.5" fill="#38bdf8" opacity="0.6"/>',
+        '  <circle cx="96" cy="96" r="4" fill="#7dd3fc"/>',
+        '</g>',
     ]
     count = len(chron)
     for idx, repo in enumerate(chron):
@@ -1684,6 +1837,8 @@ def render_wow_timeline(m: dict[str, Any]) -> str:
         parts.append(
             f'<line x1="{x}" y1="96" x2="{x}" y2="{76 if above else 116}" stroke="{t["border"]}" stroke-width="1.5"/>'
         )
+        if idx == count - 1:
+            parts.append(f'<g transform="translate({x},96)"><circle class="l-ping" cx="0" cy="0" r="6" fill="{lcol}"/></g>')
         parts.append(f'<circle cx="{x}" cy="96" r="6" fill="{lcol}" stroke="{t["bg"]}" stroke-width="2"/>')
         ly = 56 if above else 132
         parts.append(
@@ -1692,16 +1847,31 @@ def render_wow_timeline(m: dict[str, Any]) -> str:
         parts.append(
             f'<text x="{x}" y="{ly+15}" text-anchor="middle" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">{esc(date_str)} · ★ {repo.get("stargazers_count", 0)}</text>'
         )
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style)
 
 
 def render_wow_stats(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 140
+    style = """
+      @keyframes waveDraw {
+        0% { stroke-dashoffset: 240; }
+        55% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: -240; }
+      }
+      @keyframes cardPop {
+        0%, 100% { opacity: 0.72; }
+        50% { opacity: 1; }
+      }
+      .wave { stroke-dasharray: 90 150; animation: waveDraw 3.2s linear infinite; }
+      .s-dot { animation: cardPop 2.2s ease-in-out infinite; }
+    """
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
         blueprint_grid(w, h, 44),
         f'<text x="28" y="32" fill="{t["accent"]}" font-family="{FONT_MONO}" font-size="11" font-weight="700" letter-spacing="2.2">MOMENTUM · LIVE SIGNAL TELEMETRY</text>',
+        '<path d="M680,26 L735,26 L746,16 L756,36 L768,14 L778,34 L788,26 L872,26" fill="none" stroke="#1b2e54" stroke-width="1.5"/>',
+        '<path class="wave" d="M680,26 L735,26 L746,16 L756,36 L768,14 L778,34 L788,26 L872,26" fill="none" stroke="#38bdf8" stroke-width="1.8"/>',
     ]
     cards = [
         ("YEARLY COMMITS", str(m["total_contributions"]), "last 12 months"),
@@ -1712,9 +1882,11 @@ def render_wow_stats(m: dict[str, Any]) -> str:
     for i, (lbl, val, sub) in enumerate(cards):
         bx = 28 + i * 214
         by = 48
+        delay = f"-{i * 0.55:.2f}s"
         parts.append(
             f'<rect x="{bx}" y="{by}" width="202" height="72" rx="11" fill="{t["bg_alt"]}" stroke="{t["border"]}" stroke-width="1"/>'
         )
+        parts.append(f'<circle class="s-dot" cx="{bx+184}" cy="{by+18}" r="3" fill="{t["accent"]}" style="animation-delay:{delay};"/>')
         parts.append(
             f'<text x="{bx+16}" y="{by+22}" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10" font-weight="700" letter-spacing="1">{lbl}</text>'
         )
@@ -1724,12 +1896,34 @@ def render_wow_stats(m: dict[str, Any]) -> str:
         parts.append(
             f'<text x="{bx+186}" y="{by+52}" text-anchor="end" fill="{t["muted"]}" font-family="{FONT_MONO}" font-size="10">{sub}</text>'
         )
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style)
 
 
 def render_wow_heatmap(m: dict[str, Any]) -> str:
     t = THEMES["wow-profile"]
     w, h = 900, 214
+    style = """
+      @keyframes fieldSweep {
+        0% { transform: translateX(-60px); }
+        100% { transform: translateX(870px); }
+      }
+      @keyframes cellGlow {
+        0%, 100% { opacity: 0.72; }
+        50% { opacity: 1; }
+      }
+      .f-sweep { animation: fieldSweep 5.5s linear infinite; }
+      .c-live { animation: cellGlow 2.8s ease-in-out infinite; }
+    """
+    defs = """
+      <linearGradient id="heatSweep" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="heatGridClip">
+        <rect x="36" y="64" width="832" height="114" rx="4"/>
+      </clipPath>
+    """
     parts = [
         f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}" stroke-width="1.5"/>',
         blueprint_grid(w, h, 44),
@@ -1761,10 +1955,17 @@ def render_wow_heatmap(m: dict[str, Any]) -> str:
             lvl = max(0, min(4, int(day.get("level", 0))))
             x = ox + wi * (cell + gap)
             y = oy + di * (cell + gap)
-            parts.append(
-                f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.8" fill="{heat[lvl]}"/>'
-            )
+            if lvl > 0:
+                delay = f"-{((wi + di) % 10) * 0.28:.2f}s"
+                parts.append(
+                    f'<rect class="c-live" x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.8" fill="{heat[lvl]}" style="animation-delay:{delay};"/>'
+                )
+            else:
+                parts.append(
+                    f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.8" fill="{heat[lvl]}"/>'
+                )
 
+    parts.append('<g clip-path="url(#heatGridClip)"><rect class="f-sweep" x="36" y="64" width="64" height="114" fill="url(#heatSweep)"/></g>')
     parts.append(f'<text x="36" y="196" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">Less</text>')
     for li, col in enumerate(heat):
         parts.append(f'<rect x="{68 + li*15}" y="187" width="10" height="10" rx="2" fill="{col}"/>')
@@ -1772,7 +1973,7 @@ def render_wow_heatmap(m: dict[str, Any]) -> str:
     parts.append(
         f'<text x="866" y="196" text-anchor="end" fill="{t["dim"]}" font-family="{FONT_MONO}" font-size="10">Auto-synced · {esc(m["updated_date"])}</text>'
     )
-    return svg_wrap(w, h, "\n".join(parts))
+    return svg_wrap(w, h, "\n".join(parts), style=style, defs=defs)
 
 
 # ---------------------------------------------------------------------------
@@ -1899,8 +2100,8 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
     web = m.get("website", {})
     web_link = f' · <a href="{web["url"]}">{esc(web["label"])}</a>' if web.get("url") else ""
     web_txt = f' · {esc(web["label"])}' if web.get("label") else ""
-    focus_langs = " · ".join(f"`{l['name']}`" for l in m["languages"][:4])
     all_langs_sub = " · ".join(l["name"] for l in m["languages"])
+    exploring_line = " · ".join(m.get("exploring", []))
     sep = '<p align="center"><sub>✦ ───────────────────────────── ✦</sub></p>'
 
     lines: list[str] = [
@@ -1912,9 +2113,18 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
         "",
         f'**{esc(m["headline"])}**{web_txt}',
         "",
-        f'`{esc(m["mantra"])}`',
+        f'`{m["mantra"]}`',
         "",
-        f'<p><a href="https://github.com/{u}">GitHub</a>{web_link}</p>',
+        '<p>',
+        f'  <a href="https://github.com/{u}"><img src="https://img.shields.io/badge/GitHub-@{u}-0b1326?style=for-the-badge&logo=github&logoColor=60a5fa" alt="GitHub"/></a>',
+        f'  <a href="https://github.com/{u}?tab=followers"><img src="https://img.shields.io/github/followers/{u}?label=FOLLOWERS&style=for-the-badge&color=1d4ed8&labelColor=0b1326" alt="Followers"/></a>',
+    ]
+    if web.get("url"):
+        lines.append(
+            f'  <a href="{web["url"]}"><img src="https://img.shields.io/badge/{esc(web["label"])}-Website-0b1326?style=for-the-badge&logo=googlechrome&logoColor=38bdf8" alt="{esc(web["label"])}"/></a>'
+        )
+    lines.extend([
+        "</p>",
         "",
         "</div>",
         "",
@@ -1926,7 +2136,8 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
         "  <tr>",
         '    <td width="62%" valign="top">',
         f'      <p>{esc(m["bio"])}</p>',
-        f'      <p><strong>Focus:</strong> {" · ".join(esc(l["name"]) for l in m["languages"][:4])}</p>',
+        f'      <p><strong>Focus:</strong> {" · ".join(esc(s) for s in m["skills"][:6])}</p>',
+        f'      <p><strong>Exploring:</strong> {esc(exploring_line)}</p>' if exploring_line else "",
         f'      <p><sub>Beyond code: {esc(" · ".join(m["beyond_code"]))}</sub></p>',
         "    </td>",
         '    <td width="38%" valign="top">',
@@ -1955,6 +2166,10 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
         "",
         f'<picture><img src="{ap}/stack.svg" width="100%" alt="Technology stack and focus areas"></picture>',
         "",
+        '<p align="center">',
+        '  <img src="https://skillicons.dev/icons?i=c,python,javascript,typescript,html,css,react,vite,tailwind,nodejs,kotlin,firebase,sqlite,git,github,vscode&theme=dark" alt="Tech Stack Icons"/>',
+        "</p>",
+        "",
         f'<p align="center"><sub>{esc(all_langs_sub)} · chosen for the problem, not the hype</sub></p>',
         "",
         sep,
@@ -1967,15 +2182,17 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
         "",
         '<table width="100%">',
         "  <tr>",
-    ]
+    ])
     for repo in m["repos"][:4]:
         lang = repo.get("language") or "Code"
         stars = repo.get("stargazers_count", 0)
+        hp = repo.get("homepage") or ""
+        live_part = f' · <a href="{hp}">Live</a>' if hp and "github.com" not in hp else ""
         lines.extend([
             '    <td width="25%" valign="top">',
             f'      <p><strong><a href="{repo["html_url"]}">{esc(repo["display_name"])}</a></strong></p>',
-            f'      <p>{esc(truncate(repo["summary"], 95))}</p>',
-            f'      <p><sub>{esc(lang)} · ⭐ {stars}</sub></p>',
+            f'      <p>{esc(truncate(repo["summary"], 130))}</p>',
+            f'      <p><sub>{esc(lang)} · ⭐ {stars}{live_part}</sub></p>',
             "    </td>",
         ])
     lines.extend([
@@ -2036,7 +2253,7 @@ def render_wow_readme(m: dict[str, Any], ap: str, root_prefix: str, config: dict
         "</div>",
         "",
     ])
-    return "\n".join(lines)
+    return "\n".join(line for line in lines if line is not None)
 
 
 def render_preview_html(m: dict[str, Any]) -> str:

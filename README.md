@@ -6,9 +6,13 @@
 
 **CSE Student · Developer · Cybersecurity Learner** · Cybroatrix
 
-`Learn -&gt; Build -&gt; Break -&gt; Debug -&gt; Understand -&gt; Improve`
+`Learn → Build → Break → Debug → Understand → Improve`
 
-<p><a href="https://github.com/itzstebin">GitHub</a> · <a href="https://cybroatrix.com">Cybroatrix</a></p>
+<p>
+  <a href="https://github.com/itzstebin"><img src="https://img.shields.io/badge/GitHub-@itzstebin-0b1326?style=for-the-badge&logo=github&logoColor=60a5fa" alt="GitHub"/></a>
+  <a href="https://github.com/itzstebin?tab=followers"><img src="https://img.shields.io/github/followers/itzstebin?label=FOLLOWERS&style=for-the-badge&color=1d4ed8&labelColor=0b1326" alt="Followers"/></a>
+  <a href="https://cybroatrix.com"><img src="https://img.shields.io/badge/Cybroatrix-Website-0b1326?style=for-the-badge&logo=googlechrome&logoColor=38bdf8" alt="Cybroatrix"/></a>
+</p>
 
 </div>
 
@@ -20,7 +24,8 @@
   <tr>
     <td width="62%" valign="top">
       <p>CSE student learning by building, breaking, and shipping — across web apps, cybersecurity &amp; CTFs, local AI experiments, and open-source tools.</p>
-      <p><strong>Focus:</strong> HTML · TypeScript · JavaScript · Python</p>
+      <p><strong>Focus:</strong> Python · C · JavaScript · TypeScript · React · Vite</p>
+      <p><strong>Exploring:</strong> Cybersecurity · Networking · CTFs · OSINT · Digital Forensics · Steganography · Reverse Engineering · AI / ML &amp; Local LLMs</p>
       <p><sub>Beyond code: Chess · Minecraft · Editing &amp; Design · Creative Projects</sub></p>
     </td>
     <td width="38%" valign="top">
@@ -49,6 +54,10 @@
 
 <picture><img src="./assets/wow-profile/stack.svg" width="100%" alt="Technology stack and focus areas"></picture>
 
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=c,python,javascript,typescript,html,css,react,vite,tailwind,nodejs,kotlin,firebase,sqlite,git,github,vscode&theme=dark" alt="Tech Stack Icons"/>
+</p>
+
 <p align="center"><sub>HTML · TypeScript · JavaScript · Python · CSS · Kotlin · chosen for the problem, not the hype</sub></p>
 
 <p align="center"><sub>✦ ───────────────────────────── ✦</sub></p>
@@ -63,18 +72,18 @@
   <tr>
     <td width="25%" valign="top">
       <p><strong><a href="https://github.com/itzstebin/Whoisit">Whoisit</a></strong></p>
-      <p>Privacy-first Instagram follower and following checker. Runs locally in your browser with no p…</p>
+      <p>Privacy-first Instagram follower and following checker. Runs locally in your browser with no password or cookie upload.</p>
       <p><sub>JavaScript · ⭐ 4</sub></p>
     </td>
     <td width="25%" valign="top">
       <p><strong><a href="https://github.com/itzstebin/priyo-smp-tracker">priyo-smp-tracker</a></strong></p>
       <p>Live Auction House browser, candlestick price graphs, and flipping radar for Priyo SMP.</p>
-      <p><sub>HTML · ⭐ 1</sub></p>
+      <p><sub>HTML · ⭐ 1 · <a href="https://priyo-smp-tracker.vercel.app">Live</a></sub></p>
     </td>
     <td width="25%" valign="top">
       <p><strong><a href="https://github.com/itzstebin/Mail-Hunter">Mail-Hunter</a></strong></p>
-      <p>React/Vite investigation workspace + native Kotlin Android app backed by Firebase &amp; Gmail Watc…</p>
-      <p><sub>TypeScript · ⭐ 1</sub></p>
+      <p>React/Vite investigation workspace + native Kotlin Android app backed by Firebase &amp; Gmail Watch.</p>
+      <p><sub>TypeScript · ⭐ 1 · <a href="https://mail-hunter.vercel.app">Live</a></sub></p>
     </td>
     <td width="25%" valign="top">
       <p><strong><a href="https://github.com/itzstebin/Shanks">Shanks (CybroatriX)</a></strong></p>

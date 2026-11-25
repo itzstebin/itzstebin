@@ -1,6 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="174" viewBox="0 0 900 174" role="img">
 
-
+<style>
+      @keyframes spineTravel {
+        0% { transform: translateX(0px); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateX(740px); opacity: 0; }
+      }
+      @keyframes latestPing {
+        0% { transform: scale(1); opacity: 0.85; }
+        100% { transform: scale(2.4); opacity: 0; }
+      }
+      .travel { animation: spineTravel 4.2s linear infinite; }
+      .l-ping { transform-origin: 0px 0px; animation: latestPing 2.2s ease-out infinite; }
+    </style>
 <rect x="1" y="1" width="898" height="172" rx="16" fill="#060b16" stroke="#1b2e54" stroke-width="1.5"/>
 <line x1="44" y1="0" x2="44" y2="174" stroke="#0d1930" stroke-width="1"/>
 <line x1="88" y1="0" x2="88" y2="174" stroke="#0d1930" stroke-width="1"/>
@@ -27,6 +40,10 @@
 <line x1="0" y1="132" x2="900" y2="132" stroke="#0d1930" stroke-width="1"/>
 <text x="28" y="32" fill="#60a5fa" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11" font-weight="700" letter-spacing="2.2">SHIPPING TIMELINE · CHRONOLOGICAL</text>
 <line x1="70" y1="96" x2="830" y2="96" stroke="#1b2e54" stroke-width="2"/>
+<g class="travel">
+  <rect x="70" y="94.5" width="28" height="3" rx="1.5" fill="#38bdf8" opacity="0.6"/>
+  <circle cx="96" cy="96" r="4" fill="#7dd3fc"/>
+</g>
 <line x1="120" y1="96" x2="120" y2="76" stroke="#1b2e54" stroke-width="1.5"/>
 <circle cx="120" cy="96" r="6" fill="#94a3b8" stroke="#060b16" stroke-width="2"/>
 <text x="120" y="56" text-anchor="middle" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700">hey</text>
@@ -44,6 +61,7 @@
 <text x="615" y="132" text-anchor="middle" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700">Whoisit</text>
 <text x="615" y="147" text-anchor="middle" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">2026-09 · ★ 4</text>
 <line x1="780" y1="96" x2="780" y2="76" stroke="#1b2e54" stroke-width="1.5"/>
+<g transform="translate(780,96)"><circle class="l-ping" cx="0" cy="0" r="6" fill="#e34c26"/></g>
 <circle cx="780" cy="96" r="6" fill="#e34c26" stroke="#060b16" stroke-width="2"/>
 <text x="780" y="56" text-anchor="middle" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700">priyo-smp-tracker</text>
 <text x="780" y="71" text-anchor="middle" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">2026-11 · ★ 1</text>

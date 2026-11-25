@@ -1,6 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="214" viewBox="0 0 900 214" role="img">
-
-
+<defs>
+      <linearGradient id="heatSweep" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="heatGridClip">
+        <rect x="36" y="64" width="832" height="114" rx="4"/>
+      </clipPath>
+    </defs>
+<style>
+      @keyframes fieldSweep {
+        0% { transform: translateX(-60px); }
+        100% { transform: translateX(870px); }
+      }
+      @keyframes cellGlow {
+        0%, 100% { opacity: 0.72; }
+        50% { opacity: 1; }
+      }
+      .f-sweep { animation: fieldSweep 5.5s linear infinite; }
+      .c-live { animation: cellGlow 2.8s ease-in-out infinite; }
+    </style>
 <rect x="1" y="1" width="898" height="212" rx="16" fill="#060b16" stroke="#1b2e54" stroke-width="1.5"/>
 <line x1="44" y1="0" x2="44" y2="214" stroke="#0d1930" stroke-width="1"/>
 <line x1="88" y1="0" x2="88" y2="214" stroke="#0d1930" stroke-width="1"/>
@@ -281,31 +301,31 @@
 <rect x="580" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="580" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="580" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="580" y="162" width="12" height="12" rx="2.8" fill="#1d4ed8"/>
+<rect class="c-live" x="580" y="162" width="12" height="12" rx="2.8" fill="#1d4ed8" style="animation-delay:-0.00s;"/>
 <text x="596" y="56" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5">Aug</text>
-<rect x="596" y="66" width="12" height="12" rx="2.8" fill="#7dd3fc"/>
-<rect x="596" y="82" width="12" height="12" rx="2.8" fill="#7dd3fc"/>
-<rect x="596" y="98" width="12" height="12" rx="2.8" fill="#7dd3fc"/>
+<rect class="c-live" x="596" y="66" width="12" height="12" rx="2.8" fill="#7dd3fc" style="animation-delay:-1.40s;"/>
+<rect class="c-live" x="596" y="82" width="12" height="12" rx="2.8" fill="#7dd3fc" style="animation-delay:-1.68s;"/>
+<rect class="c-live" x="596" y="98" width="12" height="12" rx="2.8" fill="#7dd3fc" style="animation-delay:-1.96s;"/>
 <rect x="596" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="596" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="596" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="596" y="162" width="12" height="12" rx="2.8" fill="#7dd3fc"/>
-<rect x="612" y="66" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="596" y="162" width="12" height="12" rx="2.8" fill="#7dd3fc" style="animation-delay:-0.28s;"/>
+<rect class="c-live" x="612" y="66" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-1.68s;"/>
 <rect x="612" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="612" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="612" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="612" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="612" y="146" width="12" height="12" rx="2.8" fill="#1d4ed8"/>
-<rect x="612" y="162" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="612" y="146" width="12" height="12" rx="2.8" fill="#1d4ed8" style="animation-delay:-0.28s;"/>
+<rect class="c-live" x="612" y="162" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.56s;"/>
 <rect x="628" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="628" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="628" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="628" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="628" y="130" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="628" y="130" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.28s;"/>
 <rect x="628" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="628" y="162" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="644" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="644" y="82" width="12" height="12" rx="2.8" fill="#1d4ed8"/>
+<rect class="c-live" x="644" y="82" width="12" height="12" rx="2.8" fill="#1d4ed8" style="animation-delay:-2.52s;"/>
 <rect x="644" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="644" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="644" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
@@ -314,17 +334,17 @@
 <rect x="660" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="660" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="660" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="660" y="114" width="12" height="12" rx="2.8" fill="#172554"/>
-<rect x="660" y="130" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="660" y="114" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.56s;"/>
+<rect class="c-live" x="660" y="130" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.84s;"/>
 <rect x="660" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="660" y="162" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="660" y="162" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-1.40s;"/>
 <text x="676" y="56" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5">Sep</text>
-<rect x="676" y="66" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="676" y="66" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.00s;"/>
 <rect x="676" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="676" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="676" y="114" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="676" y="114" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.84s;"/>
 <rect x="676" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="676" y="146" width="12" height="12" rx="2.8" fill="#1d4ed8"/>
+<rect class="c-live" x="676" y="146" width="12" height="12" rx="2.8" fill="#1d4ed8" style="animation-delay:-1.40s;"/>
 <rect x="676" y="162" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="692" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="692" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
@@ -332,9 +352,9 @@
 <rect x="692" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="692" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="692" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="692" y="162" width="12" height="12" rx="2.8" fill="#172554"/>
-<rect x="708" y="66" width="12" height="12" rx="2.8" fill="#172554"/>
-<rect x="708" y="82" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="692" y="162" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-1.96s;"/>
+<rect class="c-live" x="708" y="66" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.56s;"/>
+<rect class="c-live" x="708" y="82" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-0.84s;"/>
 <rect x="708" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="708" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="708" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
@@ -343,7 +363,7 @@
 <rect x="724" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="724" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="724" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="724" y="114" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="724" y="114" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-1.68s;"/>
 <rect x="724" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="724" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="724" y="162" width="12" height="12" rx="2.8" fill="#0b1326"/>
@@ -390,7 +410,7 @@
 <rect x="820" y="114" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="820" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="820" y="146" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="820" y="162" width="12" height="12" rx="2.8" fill="#172554"/>
+<rect class="c-live" x="820" y="162" width="12" height="12" rx="2.8" fill="#172554" style="animation-delay:-1.40s;"/>
 <rect x="836" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="836" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="836" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
@@ -401,7 +421,8 @@
 <rect x="852" y="66" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="852" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="852" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
-<rect x="852" y="114" width="12" height="12" rx="2.8" fill="#1d4ed8"/>
+<rect class="c-live" x="852" y="114" width="12" height="12" rx="2.8" fill="#1d4ed8" style="animation-delay:-1.12s;"/>
+<g clip-path="url(#heatGridClip)"><rect class="f-sweep" x="36" y="64" width="64" height="114" fill="url(#heatSweep)"/></g>
 <text x="36" y="196" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">Less</text>
 <rect x="68" y="187" width="10" height="10" rx="2" fill="#0b1326"/>
 <rect x="83" y="187" width="10" height="10" rx="2" fill="#172554"/>
