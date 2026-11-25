@@ -7,23 +7,23 @@
 <circle cx="34" cy="64" r="4.5" fill="#e34c26"/>
 <text x="48" y="68" fill="#f0f9ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">HTML</text>
 <rect x="155" y="58" width="225" height="9" rx="4.5" fill="#0c2d45"/>
-<rect x="155" y="58" width="150" height="9" rx="4.5" fill="#e34c26"/>
-<text x="442" y="68" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">67.1%</text>
+<rect x="155" y="58" width="149" height="9" rx="4.5" fill="#e34c26"/>
+<text x="442" y="68" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">66.5%</text>
 <circle cx="34" cy="90" r="4.5" fill="#3178c6"/>
 <text x="48" y="94" fill="#f0f9ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">TypeScript</text>
 <rect x="155" y="84" width="225" height="9" rx="4.5" fill="#0c2d45"/>
 <rect x="155" y="84" width="28" height="9" rx="4.5" fill="#3178c6"/>
-<text x="442" y="94" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">12.8%</text>
+<text x="442" y="94" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">12.7%</text>
 <circle cx="34" cy="116" r="4.5" fill="#f7df1e"/>
 <text x="48" y="120" fill="#f0f9ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">JavaScript</text>
 <rect x="155" y="110" width="225" height="9" rx="4.5" fill="#0c2d45"/>
 <rect x="155" y="110" width="22" height="9" rx="4.5" fill="#f7df1e"/>
-<text x="442" y="120" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">10.0%</text>
+<text x="442" y="120" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">9.9%</text>
 <circle cx="34" cy="142" r="4.5" fill="#3776ab"/>
 <text x="48" y="146" fill="#f0f9ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">Python</text>
 <rect x="155" y="136" width="225" height="9" rx="4.5" fill="#0c2d45"/>
-<rect x="155" y="136" width="15" height="9" rx="4.5" fill="#3776ab"/>
-<text x="442" y="146" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">7.1%</text>
+<rect x="155" y="136" width="17" height="9" rx="4.5" fill="#3776ab"/>
+<text x="442" y="146" text-anchor="end" fill="#8ab4cc" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11.5">7.9%</text>
 <circle cx="34" cy="168" r="4.5" fill="#563d7c"/>
 <text x="48" y="172" fill="#f0f9ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600">CSS</text>
 <rect x="155" y="162" width="225" height="9" rx="4.5" fill="#0c2d45"/>

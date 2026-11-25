@@ -202,7 +202,7 @@
 <text x="148" y="207" fill="#7a6a4a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">More</text>
 <rect x="550" y="54" width="152" height="58" rx="10" fill="#14110d" stroke="#463517" stroke-width="1"/>
 <text x="564" y="74" fill="#7a6a4a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700" letter-spacing="1">YEARLY</text>
-<text x="564" y="98" fill="#fff8e7" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" font-weight="800">124</text>
+<text x="564" y="98" fill="#fff8e7" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" font-weight="800">125</text>
 <text x="688" y="97" text-anchor="end" fill="#c9b78f" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">contributions</text>
 <rect x="715" y="54" width="152" height="58" rx="10" fill="#14110d" stroke="#463517" stroke-width="1"/>
 <text x="729" y="74" fill="#7a6a4a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="9.5" font-weight="700" letter-spacing="1">ACTIVE DAYS</text>
