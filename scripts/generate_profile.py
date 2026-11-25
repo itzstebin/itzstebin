@@ -253,6 +253,15 @@ def fetch_contributions_html(username: str) -> dict[str, Any]:
     }
 
 
+def fetch_pinned_html(username: str) -> list[str]:
+    raw = http_text(f"https://github.com/{username}")
+    # Only extract explicit "Pinned" items (not fallback "Popular repositories")
+    m = re.search(r"<h2[^>]*>\s*Pinned\s*</h2>(.*?)</ol>", raw, re.S)
+    if not m:
+        return []
+    return re.findall(r'<span[^>]*class="[^"]*\brepo\b[^"]*"[^>]*>\s*([^<\s]+)\s*</span>', m.group(1))
+
+
 def fetch_graphql(username: str, token: str) -> dict[str, Any]:
     query = """
     query($login: String!) {
@@ -267,6 +276,11 @@ def fetch_graphql(username: str, token: str) -> dict[str, Any]:
         isHireable
         followers { totalCount }
         following { totalCount }
+        pinnedItems(first: 6, types: REPOSITORY) {
+          nodes {
+            ... on Repository { name }
+          }
+        }
         contributionsCollection {
           contributionCalendar {
             totalContributions
@@ -359,6 +373,7 @@ def fetch_graphql(username: str, token: str) -> dict[str, Any]:
                 "languages": langs,
             }
         )
+    pinned = [n["name"] for n in (u.get("pinnedItems", {}).get("nodes") or []) if n and n.get("name")]
     return {
         "user": {
             "login": u["login"],
@@ -373,6 +388,7 @@ def fetch_graphql(username: str, token: str) -> dict[str, Any]:
             "followers": u["followers"]["totalCount"],
             "following": u["following"]["totalCount"],
         },
+        "pinned_repos": pinned,
         "repos": repos,
         "contributions": {
             "total_year": cal["totalContributions"],
@@ -404,11 +420,15 @@ def fetch_github_data(username: str, offline: bool = False) -> dict[str, Any]:
 
     data = json.loads(json.dumps(snapshot)) if snapshot else {"user": {"login": username}, "repos": [], "contributions": {}}
 
-    # Refresh contributions via public HTML (no API rate limit)
+    # Refresh contributions and pinned repos via public HTML (no API rate limit)
     try:
         data["contributions"] = fetch_contributions_html(username)
     except Exception as exc:
         print(f"[warn] Contribution HTML fetch failed ({exc}); keeping snapshot.", file=sys.stderr)
+    try:
+        data["pinned_repos"] = fetch_pinned_html(username)
+    except Exception:
+        pass
 
     # Refresh REST user & repos if rate limit permits, preserving cached language breakdowns
     cached_langs = {r["name"]: r.get("languages", {}) for r in data.get("repos", [])}
@@ -474,14 +494,34 @@ def prepare_metrics(data: dict[str, Any], config: dict[str, Any]) -> dict[str, A
         if r["name"] not in excluded and (include_forks or not r.get("fork", False))
     ]
 
-    order_map = {name: idx for idx, name in enumerate(config.get("featured_order", []))}
-    visible_repos.sort(
-        key=lambda r: (
-            order_map.get(r["name"], 999),
-            -r.get("stargazers_count", 0),
-            r.get("updated_at", ""),
+    pinned_map = {name: idx for idx, name in enumerate(data.get("pinned_repos", []))}
+    repo_sort = config.get("repo_sort", "auto")
+
+    if repo_sort == "manual":
+        order_map = {name: idx for idx, name in enumerate(config.get("featured_order", []))}
+        visible_repos.sort(
+            key=lambda r: (
+                order_map.get(r["name"], 999),
+                -r.get("stargazers_count", 0),
+                r.get("pushed_at") or r.get("updated_at") or "",
+            )
         )
-    )
+    else:
+        def auto_rank(r: dict[str, Any]) -> tuple[Any, ...]:
+            pin_idx = pinned_map.get(r["name"], 999)
+            stars = r.get("stargazers_count", 0)
+            forks = r.get("forks_count", 0)
+            has_desc = 1 if (r.get("description") or "").strip() else 0
+            has_live = 1 if (r.get("homepage") and "github.com" not in r["homepage"]) else 0
+            has_code = 1 if (r.get("languages") or r.get("language")) else 0
+            not_fork = 1 if not r.get("fork", False) else 0
+            score = stars * 10 + forks * 5 + not_fork * 4 + has_desc * 3 + has_live * 3 + (2 if has_code else -6)
+            recency = r.get("pushed_at") or r.get("updated_at") or ""
+            # Negative timestamp string via ordinal inversion isn't needed if sorted reverse, so track ISO digits negated
+            rec_key = tuple(-ord(c) for c in recency[:19])
+            return (0 if pin_idx < 999 else 1, pin_idx, -score, -stars, rec_key)
+
+        visible_repos.sort(key=auto_rank)
 
     overrides = config.get("repo_overrides", {})
     enriched_repos = []
@@ -536,14 +576,24 @@ def prepare_metrics(data: dict[str, Any], config: dict[str, Any]) -> dict[str, A
         weeks_52.append(days[i : i + 7])
     weeks_52 = weeks_52[-52:]
 
+    blog_url = (user.get("blog") or "").strip()
+    if blog_url and not blog_url.startswith(("http://", "https://")):
+        blog_url = f"https://{blog_url}"
+    cfg_web = config.get("website", {})
+    website = (
+        cfg_web
+        if (cfg_web.get("url") and (not blog_url or blog_url.rstrip("/") == cfg_web["url"].rstrip("/")))
+        else ({"label": "Website", "url": blog_url} if blog_url else cfg_web)
+    )
+
     return {
         "username": config.get("username") or user.get("login", "itzstebin"),
-        "display_name": config.get("display_name") or user.get("name") or "Stebin S",
+        "display_name": user.get("name") or config.get("display_name") or "Stebin S",
         "avatar_url": user.get("avatar_url", ""),
         "headline": config.get("headline", "Developer · Cybersecurity Learner"),
-        "bio": config.get("bio", ""),
+        "bio": user.get("bio") or config.get("bio", ""),
         "mantra": config.get("mantra", ""),
-        "website": config.get("website", {}),
+        "website": website,
         "public_repos": user.get("public_repos", len(all_repos)),
         "total_stars": total_stars,
         "followers": user.get("followers", 0),
@@ -1814,8 +1864,13 @@ def render_wow_timeline(m: dict[str, Any]) -> str:
       .travel { animation: spineTravel 4.2s linear infinite; }
       .l-ping { transform-origin: 0px 0px; animation: latestPing 2.2s ease-out infinite; }
     """
+    substantial = [
+        r for r in m["repos"]
+        if r.get("languages") or r.get("language") or r.get("description") or (r.get("homepage") and "github.com" not in r["homepage"])
+    ]
+    pool = substantial if len(substantial) >= 5 else m["repos"]
     chron = sorted(
-        m["repos"],
+        pool,
         key=lambda r: (r.get("created_at") or r.get("updated_at") or "9999"),
     )[-5:]
     parts = [

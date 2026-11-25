@@ -25,6 +25,7 @@
   "excluded_repos": [
     "itzstebin"
   ],
+  "repo_sort": "auto",
   "featured_order": [
     "Whoisit",
     "priyo-smp-tracker",
