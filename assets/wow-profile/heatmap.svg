@@ -422,6 +422,7 @@
 <rect x="852" y="82" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect x="852" y="98" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <rect class="c-live" x="852" y="114" width="12" height="12" rx="2.8" fill="#3b82f6" style="animation-delay:-1.12s;"/>
+<rect x="852" y="130" width="12" height="12" rx="2.8" fill="#0b1326"/>
 <g clip-path="url(#heatGridClip)"><rect class="f-sweep" x="36" y="64" width="64" height="114" fill="url(#heatSweep)"/></g>
 <text x="36" y="196" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">Less</text>
 <rect x="68" y="187" width="10" height="10" rx="2" fill="#0b1326"/>
@@ -430,5 +431,5 @@
 <rect x="113" y="187" width="10" height="10" rx="2" fill="#3b82f6"/>
 <rect x="128" y="187" width="10" height="10" rx="2" fill="#7dd3fc"/>
 <text x="148" y="196" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">More</text>
-<text x="866" y="196" text-anchor="end" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">Auto-synced · 2026-11-25</text>
+<text x="866" y="196" text-anchor="end" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">Auto-synced · 2026-11-26</text>
 </svg>
