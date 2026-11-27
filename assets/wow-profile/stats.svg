@@ -58,6 +58,6 @@
 <rect x="670" y="48" width="202" height="72" rx="11" fill="#0b1326" stroke="#1b2e54" stroke-width="1"/>
 <circle class="s-dot" cx="854" cy="66" r="3" fill="#60a5fa" style="animation-delay:-1.65s;"/>
 <text x="686" y="70" fill="#52698c" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10" font-weight="700" letter-spacing="1">CURRENT STREAK</text>
-<text x="686" y="100" fill="#f1f5f9" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700">1d</text>
+<text x="686" y="100" fill="#f1f5f9" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700">0d</text>
 <text x="856" y="100" text-anchor="end" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">live streak</text>
 </svg>

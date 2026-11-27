@@ -105,7 +105,7 @@
 
 <picture><img src="./assets/wow-profile/heatmap.svg" width="100%" alt="52-week contribution energy field"></picture>
 
-<p align="center"><sub>1 day current streak · 4 day longest streak · 22 active days</sub></p>
+<p align="center"><sub>0 day current streak · 4 day longest streak · 22 active days</sub></p>
 
 <details>
 <summary><b>✨ 3D Contribution Skyline &amp; Contribution Snake (Auto-Updated)</b></summary>
@@ -132,6 +132,6 @@ Always open to building useful tools, cybersecurity research, and creative softw
 
 <p><a href="https://github.com/itzstebin">GitHub (@itzstebin)</a> · <a href="https://cybroatrix.com">Cybroatrix</a></p>
 
-<sub>Wow Profile · living identity · auto-updated from GitHub · auto-updated via GitHub Actions on 2026-11-26</sub>
+<sub>Wow Profile · living identity · auto-updated from GitHub · auto-updated via GitHub Actions on 2026-11-27</sub>
 
 </div>
